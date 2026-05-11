@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TripSync AI – Smart Travel Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+--bg:#0a0a0f;--bg2:#111118;--bg3:#18181f;--bg4:#22222c;
+--surface:#1e1e28;--surface2:#252530;--surface3:#2c2c3a;
+--border:#2e2e3e;--border2:#3a3a4e;
+--text:#f0f0fa;--text2:#b0b0c8;--text3:#6e6e88;
+--accent:#7c6aff;--accent2:#a855f7;--accent3:#06d6a0;
+--gold:#f4a261;--rose:#ff6b6b;--sky:#38bdf8;
+--radius:16px;--radius2:24px;
+}
+[data-theme="light"]{
+--bg:#f5f5fa;--bg2:#eeeef5;--bg3:#e5e5f0;--bg4:#dcdcec;
+--surface:#ffffff;--surface2:#f8f8fd;--surface3:#f0f0f8;
+--border:#dcdcec;--border2:#c8c8dc;
+--text:#0a0a1e;--text2:#44445a;--text3:#8888aa;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
+h1,h2,h3,.font-display{font-family:'Syne',sans-serif;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+
+/* ── GLASS ── */
+.glass{background:rgba(30,30,40,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);}
+.glass2{background:rgba(40,40,55,.4);backdrop-filter:blur(12px);border:1px solid var(--border);}
+[data-theme="light"] .glass{background:rgba(255,255,255,.7);border-color:var(--border);}
+[data-theme="light"] .glass2{background:rgba(240,240,248,.6);}
+
+/* ── GRADIENTS ── */
+.grad-text{background:linear-gradient(135deg,#7c6aff,#a855f7,#06d6a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.grad-accent{background:linear-gradient(135deg,var(--accent),var(--accent2));}
+.grad-hero{background:radial-gradient(ellipse at 20% 50%,rgba(124,106,255,.15) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(168,85,247,.1) 0%,transparent 50%),var(--bg);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideLeft{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes slideRight{from{transform:translateX(-100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+@keyframes ping{0%{transform:scale(1);opacity:1;}75%,100%{transform:scale(2);opacity:0;}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+@keyframes countUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pathDraw{from{stroke-dashoffset:1000;}to{stroke-dashoffset:0;}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(124,106,255,.3);}50%{box-shadow:0 0 40px rgba(124,106,255,.6);}}
+
+.animate-fadeUp{animation:fadeUp .5s ease forwards;}
+.animate-fadeIn{animation:fadeIn .4s ease forwards;}
+.animate-float{animation:float 4s ease-in-out infinite;}
+.animate-pulse-soft{animation:pulse 2s ease-in-out infinite;}
+.animate-spin{animation:spin 1s linear infinite;}
+.animate-ping{animation:ping 1.5s ease-out infinite;}
+.animate-glow{animation:glow 2s ease-in-out infinite;}
+
+.delay-1{animation-delay:.1s;}
+.delay-2{animation-delay:.2s;}
+.delay-3{animation-delay:.3s;}
+.delay-4{animation-delay:.4s;}
+.delay-5{animation-delay:.5s;}
+
+/* ── SKELETON ── */
+.skeleton{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);transition:transform .2s,box-shadow .2s,border-color .2s;}
+.card:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.3);border-color:var(--border2);}
+.card-glow:hover{box-shadow:0 0 0 1px var(--accent),0 12px 40px rgba(124,106,255,.2);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:12px;font-weight:500;font-size:14px;cursor:pointer;border:none;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 8px 24px rgba(124,106,255,.4);}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);border-color:var(--border2);}
+.btn-danger{background:rgba(255,107,107,.15);color:var(--rose);border:1px solid rgba(255,107,107,.3);}
+.btn-danger:hover{background:rgba(255,107,107,.25);}
+
+/* ── INPUTS ── */
+.input{width:100%;padding:12px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,106,255,.15);}
+.input::placeholder{color:var(--text3);}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;}
+.badge-purple{background:rgba(124,106,255,.15);color:#a99fff;}
+.badge-green{background:rgba(6,214,160,.15);color:#06d6a0;}
+.badge-gold{background:rgba(244,162,97,.15);color:#f4a261;}
+.badge-rose{background:rgba(255,107,107,.15);color:#ff6b6b;}
+.badge-sky{background:rgba(56,189,248,.15);color:#38bdf8;}
+
+/* ── NAV ── */
+#sidebar{width:260px;min-height:100vh;position:fixed;top:0;left:0;z-index:40;transition:transform .3s cubic-bezier(.4,0,.2,1);}
+#sidebar.collapsed{transform:translateX(-260px);}
+#main-content{margin-left:260px;transition:margin .3s;}
+#main-content.expanded{margin-left:0;}
+#bottom-nav{display:none;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-260px);}
+  #sidebar.mobile-open{transform:translateX(0);}
+  #main-content{margin-left:0!important;}
+  #bottom-nav{display:flex;}
+}
+
+/* ── TOAST ── */
+#toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
+.toast{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;min-width:280px;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.4);pointer-events:all;animation:slideLeft .3s ease;font-size:14px;}
+.toast.removing{animation:fadeIn .3s ease reverse;}
+
+/* ── MODAL ── */
+.modal-backdrop{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px;animation:fadeIn .2s ease;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius2);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:fadeUp .3s ease;}
+
+/* ── PROGRESS ── */
+.progress-bar{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .8s cubic-bezier(.4,0,.2,1);}
+
+/* ── MAP PLACEHOLDER ── */
+.map-container{position:relative;overflow:hidden;border-radius:var(--radius);background:linear-gradient(135deg,#0a1628 0%,#0d2137 50%,#0a1628 100%);}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(56,189,248,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.05) 1px,transparent 1px);background-size:40px 40px;}
+.map-route{stroke-dasharray:8 4;stroke-dashoffset:1000;animation:pathDraw 3s ease forwards;}
+
+/* ── AVATAR ── */
+.avatar{border-radius:50%;object-fit:cover;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-family:'Syne',sans-serif;}
+
+/* ── SECTION TRANSITIONS ── */
+.section{display:none;opacity:0;transform:translateY(16px);transition:opacity .3s,transform .3s;}
+.section.active{display:block;opacity:1;transform:translateY(0);}
+
+/* ── CHAT ── */
+.chat-bubble{max-width:80%;padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.5;}
+.chat-user{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-bottom-right-radius:4px;margin-left:auto;}
+.chat-ai{background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:4px;}
+.typing-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);animation:pulse 1.4s ease-in-out infinite;}
+.typing-dot:nth-child(2){animation-delay:.2s;}
+.typing-dot:nth-child(3){animation-delay:.4s;}
+
+/* ── DRAG ── */
+.dragging{opacity:.5;transform:scale(.98);}
+.drag-over{border:2px dashed var(--accent)!important;}
+
+/* ── TIMELINE ── */
+.timeline-line{position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),transparent);}
+.timeline-dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--accent);background:var(--bg);}
+
+/* MASONRY */
+.masonry{columns:2;gap:12px;}
+.masonry-item{break-inside:avoid;margin-bottom:12px;}
+@media(min-width:640px){.masonry{columns:3;}}
+@media(min-width:1024px){.masonry{columns:4;}}
+
+/* ── MISC ── */
+.online-dot{width:10px;height:10px;border-radius:50%;background:#06d6a0;position:relative;}
+.online-dot::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:#06d6a0;animation:ping 1.5s ease-out infinite;}
+.gradient-border{position:relative;border-radius:var(--radius);}
+.gradient-border::before{content:'';position:absolute;inset:-1px;border-radius:calc(var(--radius) + 1px);background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));z-index:-1;}
+select{appearance:none;-webkit-appearance:none;}
+</style>
+</head>
+<body class="grad-hero">
+
+<!-- ══════════════════ AUTH SCREEN ══════════════════ -->
+<div id="auth-screen" style="display:block;">
+  <div class="min-h-screen flex items-stretch">
+    <!-- Left panel -->
+    <div class="hidden lg:flex flex-col justify-between w-5/12 p-12 relative overflow-hidden" style="background:linear-gradient(145deg,#0d0d1a,#1a0a2e);">
+      <div class="absolute inset-0" style="background:radial-gradient(ellipse at 30% 40%,rgba(124,106,255,.3),transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(6,214,160,.2),transparent 50%);"></div>
+      <div class="relative z-10">
+        <div class="flex items-center gap-3 mb-16">
+          <div class="w-10 h-10 rounded-xl grad-accent flex items-center justify-center">
+            <i class="fa-solid fa-globe text-white text-lg"></i>
+          </div>
+          <span class="font-display text-xl font-bold text-white">TripSync AI</span>
+        </div>
+        <h1 class="font-display text-5xl font-bold text-white leading-tight mb-6">Your world,<br/><span class="grad-text">beautifully</span><br/>tracked.</h1>
+        <p class="text-indigo-300 text-lg leading-relaxed">AI-powered travel companion that captures every moment, every mile, every memory.</p>
+      </div>
+      <!-- Onboarding slides preview -->
+      <div class="relative z-10 space-y-4">
+        <div class="flex gap-3" id="onboarding-dots">
+          <div class="h-1.5 w-8 rounded-full bg-violet-500"></div>
+          <div class="h-1.5 w-4 rounded-full bg-white/30"></div>
+          <div class="h-1.5 w-4 rounded-full bg-white/30"></div>
+        </div>
+        <div class="glass rounded-2xl p-5 animate-float" style="background:rgba(255,255,255,.05);">
+          <div class="flex items-center gap-4 mb-3">
+            <div class="w-10 h-10 rounded-xl" style="background:rgba(6,214,160,.2);display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-route text-emerald-400"></i></div>
+            <div>
+              <div class="text-white font-semibold text-sm">Bali → Ubud → Seminyak</div>
+              <div class="text-indigo-300 text-xs">7 days · 3 cities · 48 memories</div>
+            </div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:68%;"></div></div>
+          <div class="text-indigo-300 text-xs mt-2">68% of trip complete</div>
+        </div>
+      </div>
+    </div>
+    <!-- Right panel -->
+    <div class="flex-1 flex items-center justify-center p-6 lg:p-12">
+      <div class="w-full max-w-md">
+        <!-- Auth tabs -->
+        <div class="flex gap-1 mb-8 glass rounded-xl p-1">
+          <button onclick="switchAuth('login')" id="tab-login" class="flex-1 py-2.5 rounded-lg text-sm font-medium transition-all btn-primary">Sign In</button>
+          <button onclick="switchAuth('signup')" id="tab-signup" class="flex-1 py-2.5 rounded-lg text-sm font-medium transition-all btn-ghost">Sign Up</button>
+        </div>
+        <!-- Login Form -->
+        <div id="form-login" class="space-y-5">
+          <div>
+            <h2 class="font-display text-2xl font-bold mb-1">Welcome back</h2>
+            <p class="text-sm" style="color:var(--text3)">Continue your journey where you left off</p>
+          </div>
+          <div class="space-y-3">
+            <div class="relative">
+              <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-sm" style="color:var(--text3)"></i>
+              <input type="email" placeholder="Email address" class="input pl-10" id="login-email"/>
+            </div>
+            <div class="relative">
+              <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-sm" style="color:var(--text3)"></i>
+              <input type="password" placeholder="Password" class="input pl-10 pr-10" id="login-pass"/>
+              <button onclick="togglePass('login-pass')" class="absolute right-4 top-1/2 -translate-y-1/2" style="color:var(--text3);background:none;border:none;cursor:pointer;"><i class="fa-regular fa-eye text-sm"></i></button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="rounded" style="accent-color:var(--accent);"/> <span style="color:var(--text2)">Remember me</span>
+            </label>
+            <button onclick="showForgot()" class="font-medium" style="color:var(--accent);background:none;border:none;cursor:pointer;">Forgot password?</button>
+          </div>
+          <button class="btn btn-primary w-full text-base py-3" onclick="doLogin()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In</button>
+          <div class="flex items-center gap-3 my-4"><div class="flex-1 h-px" style="background:var(--border)"></div><span class="text-xs" style="color:var(--text3)">or continue with</span><div class="flex-1 h-px" style="background:var(--border)"></div></div>
+          <div class="grid grid-cols-3 gap-3">
+            <button onclick="doLogin()" class="btn btn-ghost text-sm py-3"><i class="fa-brands fa-google text-red-400"></i></button>
+            <button onclick="doLogin()" class="btn btn-ghost text-sm py-3"><i class="fa-brands fa-apple" style="color:var(--text)"></i></button>
+            <button onclick="doLogin()" class="btn btn-ghost text-sm py-3"><i class="fa-brands fa-facebook text-blue-400"></i></button>
+          </div>
+          <p class="text-center text-sm" style="color:var(--text3)">Demo: any email + password works <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent)"></i></p>
+        </div>
+        <!-- Signup Form -->
+        <div id="form-signup" style="display:none;" class="space-y-5">
+          <div>
+            <h2 class="font-display text-2xl font-bold mb-1">Start your adventure</h2>
+            <p class="text-sm" style="color:var(--text3)">Create your free TripSync AI account</p>
+          </div>
+          <div class="space-y-3">
+            <div class="grid grid-cols-2 gap-3">
+              <input type="text" placeholder="First name" class="input"/>
+              <input type="text" placeholder="Last name" class="input"/>
+            </div>
+            <div class="relative">
+              <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-sm" style="color:var(--text3)"></i>
+              <input type="email" placeholder="Email address" class="input pl-10"/>
+            </div>
+            <div class="relative">
+              <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-sm" style="color:var(--text3)"></i>
+              <input type="password" placeholder="Create password" class="input pl-10"/>
+            </div>
+          </div>
+          <button class="btn btn-primary w-full text-base py-3" onclick="doLogin()"><i class="fa-solid fa-rocket"></i> Create Account</button>
+          <p class="text-center text-xs" style="color:var(--text3)">By signing up, you agree to our <span style="color:var(--accent);cursor:pointer;">Terms</span> & <span style="color:var(--accent);cursor:pointer;">Privacy Policy</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ APP SHELL ══════════════════ -->
+<div id="app-shell" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="glass flex flex-col py-6 px-4 border-r" style="border-color:var(--border);z-index:50;">
+    <div class="flex items-center justify-between mb-8 px-2">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl grad-accent flex items-center justify-center flex-shrink-0">
+          <i class="fa-solid fa-globe text-white"></i>
+        </div>
+        <span class="font-display text-lg font-bold">TripSync AI</span>
+      </div>
+      <button id="sidebar-toggle" onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg" style="color:var(--text3);background:none;border:none;cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Trip status mini -->
+    <div class="glass2 rounded-xl p-3 mb-6">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="online-dot flex-shrink-0"></div>
+        <span class="text-xs font-medium" style="color:var(--accent)">Trip Active</span>
+      </div>
+      <div class="font-display text-sm font-bold truncate">🌴 Bali, Indonesia</div>
+      <div class="text-xs mt-0.5" style="color:var(--text3)">Day 4 of 7 · Jul 15–22</div>
+    </div>
+
+    <!-- NAV LINKS -->
+    <nav class="flex-1 space-y-1 overflow-y-auto" id="sidebar-nav">
+      <a onclick="showSection('dashboard')" class="nav-item active flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium" data-section="dashboard"><i class="fa-solid fa-house-chimney w-4"></i> Dashboard</a>
+      <a onclick="showSection('tracking')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium" data-section="tracking"><i class="fa-solid fa-location-dot w-4"></i> Live Tracking</a>
+      <a onclick="showSection('itinerary')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium" data-section="itinerary"><i class="fa-solid fa-calendar-days w-4"></i> Itinerary</a>
+      <a onclick="showSection('expenses')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium" data-section="expenses"><i class="fa-solid fa-wallet w-4"></i> Expenses</a>
+      <a onclick="showSection('memories')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium" data-section="memories"><i class="fa-solid fa-images w-4"></i> Memories</a>
+      <a onclick="showSection('analytics')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium" data-section="analytics"><i class="fa-solid fa-chart-line w-4"></i> Analytics</a>
+      <a onclick="showSection('assistant')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium" data-section="assistant"><i class="fa-solid fa-robot w-4"></i> AI Assistant</a>
+      <a onclick="showSection('group')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium" data-section="group"><i class="fa-solid fa-users w-4"></i> Group</a>
+      <a onclick="showSection('safety')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium" data-section="safety"><i class="fa-solid fa-shield-halved w-4"></i> Safety</a>
+      <a onclick="showSection('settings')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-sm font-medium" data-section="settings"><i class="fa-solid fa-gear w-4"></i> Settings</a>
+    </nav>
+
+    <!-- User -->
+    <div class="mt-4 pt-4 border-t" style="border-color:var(--border);">
+      <div class="flex items-center gap-3 px-2">
+        <div class="avatar w-9 h-9 grad-accent text-white text-sm flex-shrink-0">A</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-medium truncate">Alex Wanderer</div>
+          <div class="text-xs truncate" style="color:var(--text3)">Pro Traveler</div>
+        </div>
+        <button onclick="showSection('settings')" class="p-1.5 rounded-lg" style="color:var(--text3);background:none;border:none;cursor:pointer;"><i class="fa-solid fa-ellipsis-vertical text-xs"></i></button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main id="main-content" class="min-h-screen">
+    <!-- TOP BAR -->
+    <header class="sticky top-0 z-30 glass border-b px-6 py-4 flex items-center gap-4" style="border-color:var(--border);">
+      <button id="menu-btn" onclick="toggleSidebar()" class="lg:hidden p-2 rounded-xl btn-ghost"><i class="fa-solid fa-bars text-sm"></i></button>
+      <div class="flex-1 relative max-w-xs hidden sm:block">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-sm" style="color:var(--text3)"></i>
+        <input type="text" placeholder="Search trips, places..." class="input py-2.5 pl-10 text-sm" id="global-search" oninput="handleSearch(this.value)"/>
+      </div>
+      <div class="flex items-center gap-2 ml-auto">
+        <button onclick="toggleOffline()" id="offline-btn" class="hidden sm:flex btn btn-ghost py-2 px-3 text-xs gap-2"><span class="online-dot" style="width:8px;height:8px;"></span> Online</button>
+        <button onclick="toggleTheme()" class="p-2.5 rounded-xl btn-ghost text-sm"><i id="theme-icon" class="fa-solid fa-moon"></i></button>
+        <button onclick="openNotifs()" class="p-2.5 rounded-xl btn-ghost text-sm relative"><i class="fa-solid fa-bell"></i><span class="absolute top-1 right-1 w-2 h-2 rounded-full" style="background:var(--rose);"></span></button>
+        <div class="avatar w-9 h-9 grad-accent text-white text-sm cursor-pointer" onclick="showSection('settings')">A</div>
+      </div>
+    </header>
+
+    <!-- SECTIONS WRAPPER -->
+    <div class="p-4 lg:p-8 pb-24 lg:pb-8">
+
+      <!-- ══ DASHBOARD ══ -->
+      <section id="section-dashboard" class="section active">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <div class="text-sm font-medium mb-1" style="color:var(--text3)">Good morning ☀️</div>
+            <h1 class="font-display text-3xl font-bold">Alex's Dashboard</h1>
+          </div>
+          <button onclick="openNewTrip()" class="btn btn-primary hidden sm:flex"><i class="fa-solid fa-plus"></i> New Trip</button>
+        </div>
+
+        <!-- Hero stats -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="card p-5 card-glow animate-fadeUp">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-xs font-medium" style="color:var(--text3)">COUNTRIES</div>
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(124,106,255,.15);"><i class="fa-solid fa-earth-americas text-sm" style="color:var(--accent)"></i></div>
+            </div>
+            <div class="font-display text-3xl font-bold counter" data-target="23">0</div>
+            <div class="text-xs mt-1" style="color:var(--accent)">+2 this year</div>
+          </div>
+          <div class="card p-5 card-glow animate-fadeUp delay-1">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-xs font-medium" style="color:var(--text3)">MILES</div>
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(6,214,160,.15);"><i class="fa-solid fa-plane text-sm" style="color:var(--accent3)"></i></div>
+            </div>
+            <div class="font-display text-3xl font-bold counter" data-target="48291">0</div>
+            <div class="text-xs mt-1" style="color:var(--accent3)">+3,200 this trip</div>
+          </div>
+          <div class="card p-5 card-glow animate-fadeUp delay-2">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-xs font-medium" style="color:var(--text3)">SPENT</div>
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(244,162,97,.15);"><i class="fa-solid fa-dollar-sign text-sm" style="color:var(--gold)"></i></div>
+            </div>
+            <div class="font-display text-3xl font-bold counter" data-target="2847">0</div>
+            <div class="text-xs mt-1" style="color:var(--gold)">72% of $4k budget</div>
+          </div>
+          <div class="card p-5 card-glow animate-fadeUp delay-3">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-xs font-medium" style="color:var(--text3)">MEMORIES</div>
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(56,189,248,.15);"><i class="fa-solid fa-camera text-sm" style="color:var(--sky)"></i></div>
+            </div>
+            <div class="font-display text-3xl font-bold counter" data-target="148">0</div>
+            <div class="text-xs mt-1" style="color:var(--sky)">+12 today</div>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+          <!-- Left col -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Current trip -->
+            <div class="card p-6 animate-fadeUp delay-2">
+              <div class="flex items-center justify-between mb-5">
+                <h3 class="font-display font-bold text-lg">Current Trip</h3>
+                <span class="badge badge-green"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-soft"></span> Active</span>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-16 h-16 rounded-2xl flex-shrink-0 overflow-hidden" style="background:linear-gradient(135deg,#0d6efd,#00b4d8);">
+                  <div class="w-full h-full flex items-center justify-center text-3xl">🌴</div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-display text-xl font-bold mb-1">Bali Adventure</div>
+                  <div class="text-sm mb-3" style="color:var(--text3)"><i class="fa-solid fa-calendar text-xs mr-1"></i>Jul 15 – Jul 22, 2025 · 7 days</div>
+                  <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="badge badge-sky"><i class="fa-solid fa-plane text-xs"></i> Flight</span>
+                    <span class="badge badge-green"><i class="fa-solid fa-hotel text-xs"></i> Hotel Booked</span>
+                    <span class="badge badge-purple"><i class="fa-solid fa-robot text-xs"></i> AI Planned</span>
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-xs mb-1"><span style="color:var(--text3)">Trip Progress</span><span class="font-medium">Day 4 / 7</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:57%;"></div></div>
+                  </div>
+                </div>
+              </div>
+              <!-- Checkpoints -->
+              <div class="mt-5 pt-5 border-t" style="border-color:var(--border)">
+                <div class="flex gap-2 overflow-x-auto pb-2">
+                  <div class="flex-shrink-0 text-center space-y-1.5">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg mx-auto" style="background:rgba(6,214,160,.15);">✓</div>
+                    <div class="text-xs" style="color:var(--text3)">Denpasar</div>
+                    <div class="w-1.5 h-1.5 rounded-full mx-auto" style="background:var(--accent3)"></div>
+                  </div>
+                  <div class="flex-1 flex items-center"><div class="h-px flex-1" style="border-top:2px dashed var(--accent3)"></div></div>
+                  <div class="flex-shrink-0 text-center space-y-1.5">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg mx-auto" style="background:rgba(6,214,160,.15);">✓</div>
+                    <div class="text-xs" style="color:var(--text3)">Ubud</div>
+                    <div class="w-1.5 h-1.5 rounded-full mx-auto" style="background:var(--accent3)"></div>
+                  </div>
+                  <div class="flex-1 flex items-center"><div class="h-px flex-1" style="border-top:2px dashed var(--border2)"></div></div>
+                  <div class="flex-shrink-0 text-center space-y-1.5">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg mx-auto animate-glow" style="background:rgba(124,106,255,.2);border:1px solid var(--accent);">📍</div>
+                    <div class="text-xs font-medium" style="color:var(--accent)">Seminyak</div>
+                    <div class="w-1.5 h-1.5 rounded-full mx-auto animate-pulse-soft" style="background:var(--accent)"></div>
+                  </div>
+                  <div class="flex-1 flex items-center"><div class="h-px flex-1" style="border-top:2px dashed var(--border)"></div></div>
+                  <div class="flex-shrink-0 text-center space-y-1.5">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg mx-auto" style="background:var(--surface2);">🏖</div>
+                    <div class="text-xs" style="color:var(--text3)">Nusa Dua</div>
+                    <div class="w-1.5 h-1.5 rounded-full mx-auto" style="background:var(--border2)"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Map preview -->
+            <div class="card overflow-hidden animate-fadeUp delay-3" onclick="showSection('tracking')">
+              <div class="map-container h-48 cursor-pointer">
+                <div class="map-grid"></div>
+                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 200">
+                  <path d="M 60 140 Q 120 100 160 120 Q 200 140 240 100 Q 280 60 340 80" fill="none" stroke="url(#routeGrad)" stroke-width="3" stroke-linecap="round" class="map-route" stroke-dasharray="600" stroke-dashoffset="0"/>
+                  <defs><linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#7c6aff"/><stop offset="100%" stop-color="#06d6a0"/></linearGradient></defs>
+                  <circle cx="60" cy="140" r="6" fill="#06d6a0"/>
+                  <circle cx="160" cy="120" r="6" fill="#06d6a0"/>
+                  <circle cx="240" cy="100" r="8" fill="#7c6aff" class="animate-pulse-soft"/>
+                  <circle cx="240" cy="100" r="14" fill="rgba(124,106,255,.2)" class="animate-pulse-soft"/>
+                  <circle cx="340" cy="80" r="6" fill="rgba(255,255,255,.3)"/>
+                </svg>
+                <div class="absolute bottom-3 left-3 glass rounded-xl px-3 py-2 text-xs">
+                  <div class="font-medium">📍 Seminyak, Bali</div>
+                  <div style="color:var(--text3)">Currently here · 28°C ☀️</div>
+                </div>
+                <div class="absolute top-3 right-3 glass rounded-xl px-3 py-2 text-xs flex items-center gap-2">
+                  <i class="fa-solid fa-expand text-xs" style="color:var(--accent)"></i>
+                  <span>Open Map</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Weather + AI rec -->
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div class="card p-5" style="background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(14,165,233,.05));">
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <div class="text-xs" style="color:var(--text3)">SEMINYAK WEATHER</div>
+                    <div class="font-display text-2xl font-bold mt-1">28°C</div>
+                  </div>
+                  <div class="text-5xl">☀️</div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 text-center">
+                  <div class="text-xs"><div class="mb-1">🌤</div><div style="color:var(--text3)">Thu</div><div class="font-medium">26°</div></div>
+                  <div class="text-xs"><div class="mb-1">⛅</div><div style="color:var(--text3)">Fri</div><div class="font-medium">24°</div></div>
+                  <div class="text-xs"><div class="mb-1">🌦</div><div style="color:var(--text3)">Sat</div><div class="font-medium">22°</div></div>
+                </div>
+              </div>
+              <div class="card p-5" style="background:linear-gradient(135deg,rgba(124,106,255,.1),rgba(168,85,247,.05));">
+                <div class="flex items-center gap-2 mb-3">
+                  <i class="fa-solid fa-robot text-sm" style="color:var(--accent)"></i>
+                  <div class="text-xs font-medium" style="color:var(--accent)">AI RECOMMENDS</div>
+                </div>
+                <div class="space-y-2.5">
+                  <div class="flex items-center gap-2 text-sm">
+                    <span>🌊</span><span>Ku De Ta Beach Club</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-sm">
+                    <span>🍜</span><span>Naughty Nuri's Warung</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-sm">
+                    <span>🛁</span><span>Lulur Spa Experience</span>
+                  </div>
+                </div>
+                <button onclick="showSection('assistant')" class="mt-4 text-xs font-medium" style="color:var(--accent);background:none;border:none;cursor:pointer;">View all recommendations →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right col -->
+          <div class="space-y-5">
+            <!-- Expense donut -->
+            <div class="card p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-display font-bold">Expenses</h3>
+                <button onclick="showSection('expenses')" class="text-xs" style="color:var(--accent);background:none;border:none;cursor:pointer;">Details →</button>
+              </div>
+              <div class="relative mb-4">
+                <canvas id="dashExpenseChart" height="180"></canvas>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="text-center">
+                    <div class="font-display text-xl font-bold">$2,847</div>
+                    <div class="text-xs" style="color:var(--text3)">of $4,000</div>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <div class="flex justify-between text-xs"><span style="color:var(--text3)">🍽 Food & Drinks</span><span class="font-medium">$620</span></div>
+                <div class="flex justify-between text-xs"><span style="color:var(--text3)">🏨 Hotels</span><span class="font-medium">$1,240</span></div>
+                <div class="flex justify-between text-xs"><span style="color:var(--text3)">✈ Transport</span><span class="font-medium">$680</span></div>
+                <div class="flex justify-between text-xs"><span style="color:var(--text3)">🛍 Shopping</span><span class="font-medium">$307</span></div>
+              </div>
+            </div>
+
+            <!-- Upcoming plans -->
+            <div class="card p-5">
+              <h3 class="font-display font-bold mb-4">Today's Plans</h3>
+              <div class="space-y-3" id="today-plans">
+                <div class="flex gap-3 items-start p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="text-xs font-medium pt-0.5 w-12 flex-shrink-0" style="color:var(--accent)">09:00</div>
+                  <div class="flex-1">
+                    <div class="text-sm font-medium">Sunrise at Tanah Lot</div>
+                    <div class="text-xs mt-0.5" style="color:var(--text3)">45 min · 8 km away</div>
+                  </div>
+                  <span class="badge badge-green text-xs">Now</span>
+                </div>
+                <div class="flex gap-3 items-start p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="text-xs font-medium pt-0.5 w-12 flex-shrink-0" style="color:var(--text3)">12:30</div>
+                  <div class="flex-1">
+                    <div class="text-sm font-medium">Lunch at Sarong</div>
+                    <div class="text-xs mt-0.5" style="color:var(--text3)">Reserved · 1.2 km</div>
+                  </div>
+                  <span class="badge badge-purple text-xs">Soon</span>
+                </div>
+                <div class="flex gap-3 items-start p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="text-xs font-medium pt-0.5 w-12 flex-shrink-0" style="color:var(--text3)">15:00</div>
+                  <div class="flex-1">
+                    <div class="text-sm font-medium">Spa at COMO Uma</div>
+                    <div class="text-xs mt-0.5" style="color:var(--text3)">2 hours · Booked</div>
+                  </div>
+                  <span class="badge badge-sky text-xs">PM</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent memories -->
+            <div class="card p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-display font-bold">Recent Memories</h3>
+                <button onclick="showSection('memories')" class="text-xs" style="color:var(--accent);background:none;border:none;cursor:pointer;">See all →</button>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="aspect-square rounded-xl overflow-hidden cursor-pointer" style="background:linear-gradient(135deg,#1e3a5f,#0d6efd);" onclick="showSection('memories')"><div class="w-full h-full flex items-center justify-center text-2xl">🌅</div></div>
+                <div class="aspect-square rounded-xl overflow-hidden cursor-pointer" style="background:linear-gradient(135deg,#2d5a27,#06d6a0);" onclick="showSection('memories')"><div class="w-full h-full flex items-center justify-center text-2xl">🌿</div></div>
+                <div class="aspect-square rounded-xl overflow-hidden cursor-pointer" style="background:linear-gradient(135deg,#5a1a2d,#f4a261);" onclick="showSection('memories')"><div class="w-full h-full flex items-center justify-center text-2xl">🏛</div></div>
+                <div class="aspect-square rounded-xl overflow-hidden cursor-pointer" style="background:linear-gradient(135deg,#1a1a5a,#7c6aff);" onclick="showSection('memories')"><div class="w-full h-full flex items-center justify-center text-2xl">🌊</div></div>
+                <div class="aspect-square rounded-xl overflow-hidden cursor-pointer" style="background:linear-gradient(135deg,#5a2d1a,#ff6b6b);" onclick="showSection('memories')"><div class="w-full h-full flex items-center justify-center text-2xl">🍜</div></div>
+                <div class="aspect-square rounded-xl overflow-hidden cursor-pointer card flex items-center justify-center text-xs" style="color:var(--text3);" onclick="showSection('memories')">+143</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ TRACKING ══ -->
+      <section id="section-tracking" class="section">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="font-display text-2xl font-bold">Live Tracking</h1>
+            <p class="text-sm mt-1" style="color:var(--text3)">Real-time journey · Bali, Indonesia</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="badge badge-green"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-soft"></span> GPS Active</span>
+          </div>
+        </div>
+
+        <!-- Big map -->
+        <div class="map-container h-64 lg:h-96 mb-6 card overflow-hidden">
+          <div class="map-grid"></div>
+          <svg class="absolute inset-0 w-full h-full" viewBox="0 0 800 400">
+            <defs>
+              <linearGradient id="routeGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#7c6aff"/>
+                <stop offset="60%" stop-color="#a855f7"/>
+                <stop offset="100%" stop-color="#06d6a0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 80 300 Q 150 250 200 280 Q 250 310 300 240 Q 370 170 420 200 Q 480 230 520 160 Q 580 90 640 120 Q 700 150 720 130" fill="none" stroke="url(#routeGrad2)" stroke-width="3" stroke-linecap="round" stroke-dasharray="800" stroke-dashoffset="0"/>
+            <!-- City dots -->
+            <g>
+              <circle cx="80" cy="300" r="8" fill="#06d6a0"/>
+              <text x="80" y="325" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10">Denpasar</text>
+            </g>
+            <g>
+              <circle cx="200" cy="280" r="8" fill="#06d6a0"/>
+              <text x="200" y="305" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10">Sanur</text>
+            </g>
+            <g>
+              <circle cx="420" cy="200" r="8" fill="#06d6a0"/>
+              <text x="420" y="225" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10">Ubud</text>
+            </g>
+            <g>
+              <circle cx="520" cy="160" r="12" fill="#7c6aff"/>
+              <circle cx="520" cy="160" r="22" fill="rgba(124,106,255,.2)" class="animate-pulse-soft"/>
+              <text x="520" y="185" text-anchor="middle" fill="white" font-size="11" font-weight="bold">📍 NOW</text>
+            </g>
+            <g>
+              <circle cx="720" cy="130" r="8" fill="rgba(255,255,255,.3)"/>
+              <text x="720" y="155" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="10">Nusa Dua</text>
+            </g>
+          </svg>
+          <!-- Mode selector -->
+          <div class="absolute top-4 left-4 glass rounded-xl p-1 flex gap-1">
+            <button class="px-3 py-1.5 rounded-lg text-xs font-medium" style="background:var(--accent);color:white;">✈ Flight</button>
+            <button class="px-3 py-1.5 rounded-lg text-xs font-medium" style="color:var(--text3);background:none;border:none;cursor:pointer;">🚗 Road</button>
+            <button class="px-3 py-1.5 rounded-lg text-xs font-medium" style="color:var(--text3);background:none;border:none;cursor:pointer;">🚶 Walk</button>
+          </div>
+        </div>
+
+        <!-- Stats row -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="card p-4 text-center"><div class="text-2xl font-display font-bold" style="color:var(--accent)">342</div><div class="text-xs mt-1" style="color:var(--text3)">km today</div></div>
+          <div class="card p-4 text-center"><div class="text-2xl font-display font-bold" style="color:var(--accent3)">5h 20m</div><div class="text-xs mt-1" style="color:var(--text3)">travel time</div></div>
+          <div class="card p-4 text-center"><div class="text-2xl font-display font-bold" style="color:var(--gold)">4</div><div class="text-xs mt-1" style="color:var(--text3)">stops visited</div></div>
+          <div class="card p-4 text-center"><div class="text-2xl font-display font-bold" style="color:var(--sky)">28°C</div><div class="text-xs mt-1" style="color:var(--text3)">current temp</div></div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="card p-6">
+          <h3 class="font-display font-bold mb-5">Journey Timeline</h3>
+          <div class="relative pl-10">
+            <div class="timeline-line"></div>
+            <div class="space-y-6" id="timeline-events">
+              <div class="relative">
+                <div class="timeline-dot absolute -left-[34px] top-1"></div>
+                <div class="p-4 rounded-xl" style="background:var(--surface2);">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-medium text-sm">Arrived Denpasar Airport</span>
+                    <span class="text-xs" style="color:var(--text3)">Jul 15 · 14:30</span>
+                  </div>
+                  <div class="text-xs" style="color:var(--text3)">✈ Garuda Indonesia GA-400 · Gate B12</div>
+                </div>
+              </div>
+              <div class="relative">
+                <div class="timeline-dot absolute -left-[34px] top-1"></div>
+                <div class="p-4 rounded-xl" style="background:var(--surface2);">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-medium text-sm">Check-in · Alaya Ubud</span>
+                    <span class="text-xs" style="color:var(--text3)">Jul 16 · 15:00</span>
+                  </div>
+                  <div class="text-xs" style="color:var(--text3)">🏨 5-star resort · 2 nights</div>
+                </div>
+              </div>
+              <div class="relative">
+                <div class="timeline-dot absolute -left-[34px] top-1" style="border-color:var(--accent3);"></div>
+                <div class="p-4 rounded-xl" style="background:var(--surface2);">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-medium text-sm">Rice Terraces · Tegalalang</span>
+                    <span class="text-xs" style="color:var(--text3)">Jul 17 · 09:00</span>
+                  </div>
+                  <div class="text-xs" style="color:var(--text3)">📷 23 photos · 4.2km walk</div>
+                </div>
+              </div>
+              <div class="relative">
+                <div class="timeline-dot absolute -left-[34px] top-1" style="border-color:var(--accent);background:var(--accent);"></div>
+                <div class="p-4 rounded-xl border" style="border-color:var(--accent);background:rgba(124,106,255,.08);">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-medium text-sm" style="color:var(--accent)">📍 Now · Seminyak Beach</span>
+                    <span class="text-xs" style="color:var(--text3)">Jul 18 · 11:45</span>
+                  </div>
+                  <div class="text-xs" style="color:var(--text3)">🌊 Exploring beach clubs · 28°C sunny</div>
+                </div>
+              </div>
+              <div class="relative">
+                <div class="timeline-dot absolute -left-[34px] top-1" style="border-color:var(--border2);opacity:.4;"></div>
+                <div class="p-4 rounded-xl opacity-50" style="background:var(--surface2);">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-medium text-sm">Nusa Dua Water Sports</span>
+                    <span class="text-xs" style="color:var(--text3)">Jul 19 · 10:00</span>
+                  </div>
+                  <div class="text-xs" style="color:var(--text3)">🏄 Upcoming · Booked</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ ITINERARY ══ -->
+      <section id="section-itinerary" class="section">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="font-display text-2xl font-bold">Itinerary Planner</h1>
+            <p class="text-sm mt-1" style="color:var(--text3)">Bali · Jul 15–22, 2025</p>
+          </div>
+          <button onclick="generateAIItinerary()" class="btn btn-primary text-sm"><i class="fa-solid fa-robot"></i> AI Generate</button>
+        </div>
+
+        <!-- Day tabs -->
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-6">
+          <button class="day-tab active flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all" data-day="1" onclick="switchDay(1)">Day 1 · Jul 15</button>
+          <button class="day-tab flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all" data-day="2" onclick="switchDay(2)">Day 2 · Jul 16</button>
+          <button class="day-tab flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all" data-day="3" onclick="switchDay(3)">Day 3 · Jul 17</button>
+          <button class="day-tab flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all" data-day="4" onclick="switchDay(4)">Day 4 · Jul 18</button>
+          <button class="day-tab flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all" data-day="5" onclick="switchDay(5)">Day 5 · Jul 19</button>
+          <button class="day-tab flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all" data-day="6" onclick="switchDay(6)">Day 6 · Jul 20</button>
+          <button class="day-tab flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all" data-day="7" onclick="switchDay(7)">Day 7 · Jul 21</button>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2">
+            <div id="itinerary-cards" class="space-y-3">
+              <!-- generated by JS -->
+            </div>
+            <button onclick="addActivity()" class="mt-4 w-full py-3 rounded-xl border-2 border-dashed text-sm font-medium transition-all" style="border-color:var(--border2);color:var(--text3);background:none;cursor:pointer;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">
+              <i class="fa-solid fa-plus mr-2"></i>Add Activity
+            </button>
+          </div>
+          <!-- Suggestions panel -->
+          <div class="space-y-4">
+            <div class="card p-5">
+              <div class="flex items-center gap-2 mb-4">
+                <i class="fa-solid fa-robot text-sm" style="color:var(--accent)"></i>
+                <h3 class="font-display font-bold text-sm">AI Suggestions</h3>
+              </div>
+              <div class="space-y-3" id="ai-suggestions">
+                <div class="p-3 rounded-xl cursor-pointer transition-all" style="background:var(--surface2);" onclick="addSuggestion(this,'Monkey Forest Sanctuary','09:00','2h','Nature')">
+                  <div class="flex items-start gap-2">
+                    <span class="text-lg">🐒</span>
+                    <div>
+                      <div class="text-sm font-medium">Monkey Forest Sanctuary</div>
+                      <div class="text-xs mt-0.5" style="color:var(--text3)">2h · Nature · 4.7★</div>
+                    </div>
+                  </div>
+                  <button class="mt-2 text-xs font-medium" style="color:var(--accent);background:none;border:none;cursor:pointer;">+ Add to plan</button>
+                </div>
+                <div class="p-3 rounded-xl cursor-pointer transition-all" style="background:var(--surface2);">
+                  <div class="flex items-start gap-2">
+                    <span class="text-lg">🎨</span>
+                    <div>
+                      <div class="text-sm font-medium">Batik Workshop</div>
+                      <div class="text-xs mt-0.5" style="color:var(--text3)">3h · Culture · 4.9★</div>
+                    </div>
+                  </div>
+                  <button class="mt-2 text-xs font-medium" style="color:var(--accent);background:none;border:none;cursor:pointer;">+ Add to plan</button>
+                </div>
+                <div class="p-3 rounded-xl cursor-pointer transition-all" style="background:var(--surface2);">
+                  <div class="flex items-start gap-2">
+                    <span class="text-lg">🍛</span>
+                    <div>
+                      <div class="text-sm font-medium">Warung Babi Guling Ibu Oka</div>
+                      <div class="text-xs mt-0.5" style="color:var(--text3)">1h · Food · 4.8★</div>
+                    </div>
+                  </div>
+                  <button class="mt-2 text-xs font-medium" style="color:var(--accent);background:none;border:none;cursor:pointer;">+ Add to plan</button>
+                </div>
+              </div>
+            </div>
+            <div class="card p-5">
+              <h3 class="font-display font-bold text-sm mb-3">Day Summary</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between"><span style="color:var(--text3)">Activities</span><span class="font-medium" id="activity-count">4 planned</span></div>
+                <div class="flex justify-between"><span style="color:var(--text3)">Est. Cost</span><span class="font-medium">~$85</span></div>
+                <div class="flex justify-between"><span style="color:var(--text3)">Travel Time</span><span class="font-medium">2.5h</span></div>
+                <div class="flex justify-between"><span style="color:var(--text3)">Optimized</span><span class="font-medium" style="color:var(--accent3)">✓ Yes</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ EXPENSES ══ -->
+      <section id="section-expenses" class="section">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="font-display text-2xl font-bold">Expense Tracker</h1>
+            <p class="text-sm mt-1" style="color:var(--text3)">Bali trip · Jul 2025</p>
+          </div>
+          <button onclick="openAddExpense()" class="btn btn-primary text-sm"><i class="fa-solid fa-plus"></i> Add Expense</button>
+        </div>
+
+        <!-- Budget overview -->
+        <div class="grid sm:grid-cols-3 gap-4 mb-6">
+          <div class="card p-5 col-span-1 sm:col-span-1">
+            <div class="text-xs mb-1" style="color:var(--text3)">TOTAL BUDGET</div>
+            <div class="font-display text-2xl font-bold">$4,000</div>
+            <div class="text-xs mt-1" style="color:var(--text3)">Bali Trip · 7 days</div>
+          </div>
+          <div class="card p-5">
+            <div class="text-xs mb-1" style="color:var(--gold)">SPENT</div>
+            <div class="font-display text-2xl font-bold" style="color:var(--gold)">$2,847</div>
+            <div class="text-xs mt-1" style="color:var(--text3)">71.2% of budget</div>
+          </div>
+          <div class="card p-5">
+            <div class="text-xs mb-1" style="color:var(--accent3)">REMAINING</div>
+            <div class="font-display text-2xl font-bold" style="color:var(--accent3)">$1,153</div>
+            <div class="text-xs mt-1" style="color:var(--text3)">3 days left</div>
+          </div>
+        </div>
+        <div class="progress-bar mb-6 h-3">
+          <div class="progress-fill" style="width:71.2%;background:linear-gradient(90deg,#06d6a0,#f4a261,#ff6b6b);"></div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2">
+            <!-- Category breakdown -->
+            <div class="card p-5 mb-5">
+              <h3 class="font-display font-bold mb-4">By Category</h3>
+              <div class="space-y-4" id="expense-categories">
+                <div class="flex items-center gap-3"><span class="text-lg w-8">🍽</span><div class="flex-1"><div class="flex justify-between text-sm mb-1"><span>Food & Drinks</span><span class="font-medium">$620</span></div><div class="progress-bar"><div class="progress-fill" style="width:52%;background:linear-gradient(90deg,#f4a261,#e76f51);"></div></div></div></div>
+                <div class="flex items-center gap-3"><span class="text-lg w-8">🏨</span><div class="flex-1"><div class="flex justify-between text-sm mb-1"><span>Hotels</span><span class="font-medium">$1,240</span></div><div class="progress-bar"><div class="progress-fill" style="width:78%;"></div></div></div></div>
+                <div class="flex items-center gap-3"><span class="text-lg w-8">✈</span><div class="flex-1"><div class="flex justify-between text-sm mb-1"><span>Transport</span><span class="font-medium">$680</span></div><div class="progress-bar"><div class="progress-fill" style="width:60%;background:linear-gradient(90deg,#06d6a0,#38bdf8);"></div></div></div></div>
+                <div class="flex items-center gap-3"><span class="text-lg w-8">🛍</span><div class="flex-1"><div class="flex justify-between text-sm mb-1"><span>Shopping</span><span class="font-medium">$307</span></div><div class="progress-bar"><div class="progress-fill" style="width:38%;background:linear-gradient(90deg,#a855f7,#ec4899);"></div></div></div></div>
+              </div>
+            </div>
+            <!-- Transactions -->
+            <div class="card p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-display font-bold">Transactions</h3>
+                <select class="input py-1.5 px-3 text-xs w-auto" style="width:auto;" onchange="filterExpenses(this.value)">
+                  <option>All</option><option>Food</option><option>Hotel</option><option>Transport</option>
+                </select>
+              </div>
+              <div class="space-y-2" id="transactions-list">
+                <!-- populated by JS -->
+              </div>
+            </div>
+          </div>
+          <!-- Pie chart -->
+          <div class="card p-5">
+            <h3 class="font-display font-bold mb-4">Breakdown</h3>
+            <canvas id="expensePieChart" height="220"></canvas>
+            <div class="mt-4 space-y-2">
+              <div class="flex items-center gap-2 text-xs"><span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#7c6aff;"></span><span style="color:var(--text3)">Hotels</span><span class="ml-auto font-medium">44%</span></div>
+              <div class="flex items-center gap-2 text-xs"><span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#06d6a0;"></span><span style="color:var(--text3)">Transport</span><span class="ml-auto font-medium">24%</span></div>
+              <div class="flex items-center gap-2 text-xs"><span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#f4a261;"></span><span style="color:var(--text3)">Food</span><span class="ml-auto font-medium">22%</span></div>
+              <div class="flex items-center gap-2 text-xs"><span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#a855f7;"></span><span style="color:var(--text3)">Shopping</span><span class="ml-auto font-medium">10%</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ MEMORIES ══ -->
+      <section id="section-memories" class="section">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="font-display text-2xl font-bold">Memory Journal</h1>
+            <p class="text-sm mt-1" style="color:var(--text3)">148 memories · 7 destinations</p>
+          </div>
+          <button onclick="showToast('📸 Upload feature coming soon!','info')" class="btn btn-primary text-sm"><i class="fa-solid fa-plus"></i> Add Memory</button>
+        </div>
+        <!-- Filters -->
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-6">
+          <button class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium" style="background:var(--accent);color:white;">All</button>
+          <button class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium btn-ghost">Photos</button>
+          <button class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium btn-ghost">Videos</button>
+          <button class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium btn-ghost">Highlights</button>
+          <button class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium btn-ghost">Notes</button>
+        </div>
+        <!-- Masonry gallery -->
+        <div class="masonry" id="memories-grid">
+          <!-- populated by JS -->
+        </div>
+      </section>
+
+      <!-- ══ ANALYTICS ══ -->
+      <section id="section-analytics" class="section">
+        <div class="mb-6">
+          <h1 class="font-display text-2xl font-bold">Travel Analytics</h1>
+          <p class="text-sm mt-1" style="color:var(--text3)">Your journey by the numbers</p>
+        </div>
+        <div class="grid sm:grid-cols-4 gap-4 mb-8">
+          <div class="card p-5 text-center"><div class="font-display text-3xl font-bold grad-text counter" data-target="23">0</div><div class="text-xs mt-2" style="color:var(--text3)">Countries Visited</div></div>
+          <div class="card p-5 text-center"><div class="font-display text-3xl font-bold grad-text counter" data-target="78">0</div><div class="text-xs mt-2" style="color:var(--text3)">Cities Explored</div></div>
+          <div class="card p-5 text-center"><div class="font-display text-3xl font-bold grad-text">48K</div><div class="text-xs mt-2" style="color:var(--text3)">Miles Traveled</div></div>
+          <div class="card p-5 text-center"><div class="font-display text-3xl font-bold grad-text counter" data-target="14">0</div><div class="text-xs mt-2" style="color:var(--text3)">Trips Completed</div></div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="card p-6">
+            <h3 class="font-display font-bold mb-4">Monthly Travel Frequency</h3>
+            <canvas id="monthlyChart" height="200"></canvas>
+          </div>
+          <div class="card p-6">
+            <h3 class="font-display font-bold mb-4">Annual Expenses</h3>
+            <canvas id="annualChart" height="200"></canvas>
+          </div>
+          <div class="card p-6">
+            <h3 class="font-display font-bold mb-4">Travel by Continent</h3>
+            <canvas id="continentChart" height="200"></canvas>
+          </div>
+          <div class="card p-6">
+            <h3 class="font-display font-bold mb-4">Top Destinations</h3>
+            <div class="space-y-3" id="top-destinations">
+              <div class="flex items-center gap-3"><span class="text-xl w-8">🌴</span><div class="flex-1"><div class="flex justify-between text-sm mb-1"><span>Bali, Indonesia</span><span class="font-medium text-xs" style="color:var(--accent)">3x</span></div><div class="progress-bar"><div class="progress-fill" style="width:80%;"></div></div></div></div>
+              <div class="flex items-center gap-3"><span class="text-xl w-8">🗼</span><div class="flex-1"><div class="flex justify-between text-sm mb-1"><span>Tokyo, Japan</span><span class="font-medium text-xs" style="color:var(--accent)">2x</span></div><div class="progress-bar"><div class="progress-fill" style="width:60%;"></div></div></div></div>
+              <div class="flex items-center gap-3"><span class="text-xl w-8">🏔</span><div class="flex-1"><div class="flex justify-between text-sm mb-1"><span>Patagonia, Chile</span><span class="font-medium text-xs" style="color:var(--accent)">1x</span></div><div class="progress-bar"><div class="progress-fill" style="width:40%;"></div></div></div></div>
+              <div class="flex items-center gap-3"><span class="text-xl w-8">🌅</span><div class="flex-1"><div class="flex justify-between text-sm mb-1"><span>Santorini, Greece</span><span class="font-medium text-xs" style="color:var(--accent)">2x</span></div><div class="progress-bar"><div class="progress-fill" style="width:55%;"></div></div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ AI ASSISTANT ══ -->
+      <section id="section-assistant" class="section">
+        <div class="mb-6">
+          <h1 class="font-display text-2xl font-bold">AI Travel Assistant</h1>
+          <p class="text-sm mt-1" style="color:var(--text3)">Powered by TripSync AI · Always available</p>
+        </div>
+        <div class="grid lg:grid-cols-4 gap-6">
+          <div class="lg:col-span-3 card flex flex-col" style="height:600px;">
+            <!-- Chat messages -->
+            <div class="flex-1 overflow-y-auto p-5 space-y-4" id="chat-messages">
+              <div class="flex gap-3">
+                <div class="w-8 h-8 rounded-xl grad-accent flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div>
+                <div class="chat-bubble chat-ai">
+                  <p>Hey Alex! 👋 I'm your TripSync AI assistant. I'm fully aware of your Bali trip and current location in Seminyak. How can I help you today?</p>
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <button class="badge badge-purple text-xs cursor-pointer" onclick="sendQuick('Suggest places nearby')">Suggest places nearby</button>
+                    <button class="badge badge-purple text-xs cursor-pointer" onclick="sendQuick('Show today itinerary')">Today\'s itinerary</button>
+                    <button class="badge badge-purple text-xs cursor-pointer" onclick="sendQuick('How much did I spend?')">Spending summary</button>
+                    <button class="badge badge-purple text-xs cursor-pointer" onclick="sendQuick('Best cafes nearby?')">Best cafes nearby</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Input -->
+            <div class="border-t p-4 flex gap-3" style="border-color:var(--border);">
+              <div class="flex-1 relative">
+                <input type="text" id="chat-input" placeholder="Ask me anything about your trip..." class="input pr-10 text-sm" onkeydown="if(event.key==='Enter')sendChat()"/>
+                <button onclick="showToast('🎙 Voice input coming soon!','info')" class="absolute right-3 top-1/2 -translate-y-1/2 text-sm" style="color:var(--text3);background:none;border:none;cursor:pointer;"><i class="fa-solid fa-microphone"></i></button>
+              </div>
+              <button onclick="sendChat()" class="btn btn-primary px-4"><i class="fa-solid fa-paper-plane text-sm"></i></button>
+            </div>
+          </div>
+          <!-- Sidebar prompts -->
+          <div class="space-y-4">
+            <div class="card p-5">
+              <h3 class="font-display font-bold text-sm mb-3">Suggested Prompts</h3>
+              <div class="space-y-2">
+                <button onclick="sendQuick(this.textContent.trim())" class="w-full text-left p-3 rounded-xl text-xs transition-all" style="background:var(--surface2);color:var(--text2);border:none;cursor:pointer;" onmouseover="this.style.background='var(--surface3)'" onmouseout="this.style.background='var(--surface2)'">🗺 What should I see tomorrow in Bali?</button>
+                <button onclick="sendQuick(this.textContent.trim())" class="w-full text-left p-3 rounded-xl text-xs transition-all" style="background:var(--surface2);color:var(--text2);border:none;cursor:pointer;" onmouseover="this.style.background='var(--surface3)'" onmouseout="this.style.background='var(--surface2)'">💰 Am I on budget for this trip?</button>
+                <button onclick="sendQuick(this.textContent.trim())" class="w-full text-left p-3 rounded-xl text-xs transition-all" style="background:var(--surface2);color:var(--text2);border:none;cursor:pointer;" onmouseover="this.style.background='var(--surface3)'" onmouseout="this.style.background='var(--surface2)'">🍜 Best local food recommendations?</button>
+                <button onclick="sendQuick(this.textContent.trim())" class="w-full text-left p-3 rounded-xl text-xs transition-all" style="background:var(--surface2);color:var(--text2);border:none;cursor:pointer;" onmouseover="this.style.background='var(--surface3)'" onmouseout="this.style.background='var(--surface2)'">🌧 Will it rain this weekend?</button>
+                <button onclick="sendQuick(this.textContent.trim())" class="w-full text-left p-3 rounded-xl text-xs transition-all" style="background:var(--surface2);color:var(--text2);border:none;cursor:pointer;" onmouseover="this.style.background='var(--surface3)'" onmouseout="this.style.background='var(--surface2)'">📸 Photo spots near Seminyak?</button>
+                <button onclick="sendQuick(this.textContent.trim())" class="w-full text-left p-3 rounded-xl text-xs transition-all" style="background:var(--surface2);color:var(--text2);border:none;cursor:pointer;" onmouseover="this.style.background='var(--surface3)'" onmouseout="this.style.background='var(--surface2)'">🚗 How to get to Uluwatu Temple?</button>
+              </div>
+            </div>
+            <div class="card p-5">
+              <h3 class="font-display font-bold text-sm mb-3">AI Capabilities</h3>
+              <div class="space-y-2 text-xs" style="color:var(--text3)">
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Itinerary planning</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Budget insights</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Local recommendations</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Weather forecasts</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Translation help</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Emergency assistance</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ GROUP ══ -->
+      <section id="section-group" class="section">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="font-display text-2xl font-bold">Group Travel</h1>
+            <p class="text-sm mt-1" style="color:var(--text3)">Bali Squad · 4 members</p>
+          </div>
+          <button onclick="showToast('✉ Invite sent!','success')" class="btn btn-primary text-sm"><i class="fa-solid fa-user-plus"></i> Invite</button>
+        </div>
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-5">
+            <!-- Members -->
+            <div class="card p-6">
+              <h3 class="font-display font-bold mb-4">Squad Members</h3>
+              <div class="space-y-3" id="group-members">
+                <div class="flex items-center gap-3 p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="w-10 h-10 avatar grad-accent text-white flex-shrink-0">A</div>
+                  <div class="flex-1">
+                    <div class="text-sm font-medium">Alex Wanderer <span class="badge badge-purple text-xs ml-2">You · Host</span></div>
+                    <div class="text-xs mt-0.5" style="color:var(--text3)">📍 Seminyak · Spent $840</div>
+                  </div>
+                  <div class="online-dot flex-shrink-0"></div>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="w-10 h-10 avatar text-white flex-shrink-0 font-bold text-sm" style="background:linear-gradient(135deg,#f4a261,#e76f51);">S</div>
+                  <div class="flex-1">
+                    <div class="text-sm font-medium">Sara Kim</div>
+                    <div class="text-xs mt-0.5" style="color:var(--text3)">📍 Seminyak · Spent $620</div>
+                  </div>
+                  <div class="online-dot flex-shrink-0"></div>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="w-10 h-10 avatar text-white flex-shrink-0 font-bold text-sm" style="background:linear-gradient(135deg,#06d6a0,#0d6efd);">M</div>
+                  <div class="flex-1">
+                    <div class="text-sm font-medium">Marco Rossi</div>
+                    <div class="text-xs mt-0.5" style="color:var(--text3)">📍 Ubud · Spent $780</div>
+                  </div>
+                  <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:var(--border2);"></div>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="w-10 h-10 avatar text-white flex-shrink-0 font-bold text-sm" style="background:linear-gradient(135deg,#7c6aff,#a855f7);">J</div>
+                  <div class="flex-1">
+                    <div class="text-sm font-medium">Jin Park</div>
+                    <div class="text-xs mt-0.5" style="color:var(--text3)">📍 Denpasar · Spent $490</div>
+                  </div>
+                  <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:var(--border2);"></div>
+                </div>
+              </div>
+            </div>
+            <!-- Group chat -->
+            <div class="card flex flex-col" style="height:320px;">
+              <div class="p-4 border-b" style="border-color:var(--border);"><h3 class="font-display font-bold">Group Chat</h3></div>
+              <div class="flex-1 overflow-y-auto p-4 space-y-3" id="group-chat">
+                <div class="flex gap-2 items-end"><div class="w-7 h-7 avatar text-white text-xs flex-shrink-0" style="background:linear-gradient(135deg,#f4a261,#e76f51);">S</div><div class="chat-bubble chat-ai text-xs">Anyone up for sunset at Ku De Ta tonight? 🌅</div></div>
+                <div class="flex gap-2 items-end justify-end"><div class="chat-bubble chat-user text-xs">Yes! Absolutely! Count me in 🙌</div></div>
+                <div class="flex gap-2 items-end"><div class="w-7 h-7 avatar text-white text-xs flex-shrink-0" style="background:linear-gradient(135deg,#06d6a0,#0d6efd);">M</div><div class="chat-bubble chat-ai text-xs">I'll be there! Coming from Ubud, ETA 6pm 🚗</div></div>
+              </div>
+              <div class="p-3 border-t flex gap-2" style="border-color:var(--border);">
+                <input type="text" id="group-chat-input" placeholder="Message the squad..." class="input py-2 text-xs flex-1" onkeydown="if(event.key==='Enter')sendGroupChat()"/>
+                <button onclick="sendGroupChat()" class="btn btn-primary px-3 py-2 text-xs"><i class="fa-solid fa-paper-plane"></i></button>
+              </div>
+            </div>
+          </div>
+          <!-- Expense split -->
+          <div class="space-y-5">
+            <div class="card p-5">
+              <h3 class="font-display font-bold mb-4">Expense Split</h3>
+              <div class="space-y-3">
+                <div class="flex justify-between text-sm"><span style="color:var(--text3)">Total Group Spend</span><span class="font-bold">$2,730</span></div>
+                <div class="flex justify-between text-sm"><span style="color:var(--text3)">Per Person (equal)</span><span class="font-bold">$682.50</span></div>
+              </div>
+              <div class="mt-4 space-y-3">
+                <div class="p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="flex justify-between text-xs mb-1"><span>Alex owes Sara</span><span class="font-medium text-rose-400">$62.50</span></div>
+                </div>
+                <div class="p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="flex justify-between text-xs mb-1"><span>Jin owes Alex</span><span class="font-medium text-rose-400">$192.50</span></div>
+                </div>
+                <div class="p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="flex justify-between text-xs mb-1"><span>Marco owes Sara</span><span class="font-medium text-rose-400">$97.50</span></div>
+                </div>
+              </div>
+              <button onclick="showToast('💸 Settlement requests sent!','success')" class="btn btn-primary w-full mt-4 text-sm">Settle Up</button>
+            </div>
+            <div class="card p-5">
+              <h3 class="font-display font-bold mb-3">Live Locations</h3>
+              <div class="map-container h-40 rounded-xl overflow-hidden">
+                <div class="map-grid"></div>
+                <div class="absolute inset-0 flex items-center justify-center gap-8">
+                  <div class="text-center"><div class="text-2xl animate-float">📍</div><div class="text-xs mt-1" style="color:var(--accent)">You</div></div>
+                  <div class="text-center" style="opacity:.7;"><div class="text-2xl" style="animation:float 4s ease-in-out infinite;animation-delay:.5s;">📍</div><div class="text-xs mt-1" style="color:var(--gold)">Sara</div></div>
+                  <div class="text-center" style="opacity:.5;"><div class="text-2xl" style="animation:float 4s ease-in-out infinite;animation-delay:1s;">📍</div><div class="text-xs mt-1" style="color:var(--accent3)">Marco</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SAFETY ══ -->
+      <section id="section-safety" class="section">
+        <div class="mb-6">
+          <h1 class="font-display text-2xl font-bold">Safety Center</h1>
+          <p class="text-sm mt-1" style="color:var(--text3)">Stay safe wherever you go</p>
+        </div>
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-5">
+            <!-- SOS -->
+            <div class="card p-6 text-center" style="background:rgba(255,107,107,.05);border-color:rgba(255,107,107,.2);">
+              <div class="mb-4"><i class="fa-solid fa-shield-halved text-4xl" style="color:var(--rose)"></i></div>
+              <h3 class="font-display text-xl font-bold mb-2">Emergency SOS</h3>
+              <p class="text-sm mb-5" style="color:var(--text3)">Press and hold to alert emergency contacts and share your location</p>
+              <button onclick="triggerSOS()" class="btn btn-danger text-base px-8 py-4 mx-auto" style="font-size:16px;">
+                <i class="fa-solid fa-siren-on"></i> HOLD FOR SOS
+              </button>
+              <p class="text-xs mt-4" style="color:var(--text3)">Will notify: Sara Kim, Marco Rossi + local emergency</p>
+            </div>
+            <!-- Emergency contacts -->
+            <div class="card p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-display font-bold">Emergency Contacts</h3>
+                <button onclick="showToast('Contact added!','success')" class="btn btn-ghost text-xs py-1.5 px-3"><i class="fa-solid fa-plus"></i> Add</button>
+              </div>
+              <div class="space-y-3">
+                <div class="flex items-center gap-3 p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="w-10 h-10 avatar text-white text-sm flex-shrink-0" style="background:linear-gradient(135deg,#f4a261,#e76f51);">S</div>
+                  <div class="flex-1"><div class="text-sm font-medium">Sara Kim</div><div class="text-xs" style="color:var(--text3)">Travel buddy · +1 (555) 0192</div></div>
+                  <i class="fa-solid fa-phone text-sm" style="color:var(--accent3);cursor:pointer;" onclick="showToast('📞 Calling Sara...','info')"></i>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-xl" style="background:var(--surface2);">
+                  <div class="w-10 h-10 avatar text-white text-sm flex-shrink-0" style="background:linear-gradient(135deg,#7c6aff,#a855f7);">M</div>
+                  <div class="flex-1"><div class="text-sm font-medium">Mom</div><div class="text-xs" style="color:var(--text3)">Family · +1 (555) 0147</div></div>
+                  <i class="fa-solid fa-phone text-sm" style="color:var(--accent3);cursor:pointer;" onclick="showToast('📞 Calling Mom...','info')"></i>
+                </div>
+              </div>
+            </div>
+            <!-- Local emergency -->
+            <div class="card p-5">
+              <h3 class="font-display font-bold mb-4">Local Emergency Numbers · Indonesia</h3>
+              <div class="grid grid-cols-3 gap-3">
+                <div class="p-3 rounded-xl text-center" style="background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.2);">
+                  <div class="text-2xl mb-1">🚔</div>
+                  <div class="font-bold text-sm" style="color:var(--rose)">110</div>
+                  <div class="text-xs" style="color:var(--text3)">Police</div>
+                </div>
+                <div class="p-3 rounded-xl text-center" style="background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);">
+                  <div class="text-2xl mb-1">🏥</div>
+                  <div class="font-bold text-sm" style="color:var(--sky)">119</div>
+                  <div class="text-xs" style="color:var(--text3)">Ambulance</div>
+                </div>
+                <div class="p-3 rounded-xl text-center" style="background:rgba(244,162,97,.1);border:1px solid rgba(244,162,97,.2);">
+                  <div class="text-2xl mb-1">🚒</div>
+                  <div class="font-bold text-sm" style="color:var(--gold)">113</div>
+                  <div class="text-xs" style="color:var(--text3)">Fire</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Med card + safe routes -->
+          <div class="space-y-5">
+            <div class="card p-5">
+              <h3 class="font-display font-bold mb-4">Medical Info</h3>
+              <div class="space-y-3 text-sm">
+                <div class="flex justify-between"><span style="color:var(--text3)">Blood Type</span><span class="font-medium badge badge-rose">A+</span></div>
+                <div class="flex justify-between"><span style="color:var(--text3)">Allergies</span><span class="font-medium">Penicillin</span></div>
+                <div class="flex justify-between"><span style="color:var(--text3)">Insurance</span><span class="font-medium" style="color:var(--accent3)">Active</span></div>
+                <div class="flex justify-between"><span style="color:var(--text3)">Vaccinations</span><span class="font-medium">Up to date</span></div>
+              </div>
+              <button onclick="showToast('🏥 Medical card shared with contacts','success')" class="btn btn-ghost w-full mt-4 text-sm">Share Card</button>
+            </div>
+            <div class="card p-5">
+              <h3 class="font-display font-bold mb-4">Safety Status</h3>
+              <div class="space-y-3">
+                <div class="flex items-center gap-2 text-sm"><i class="fa-solid fa-circle-check text-emerald-400"></i><span>Location sharing: ON</span></div>
+                <div class="flex items-center gap-2 text-sm"><i class="fa-solid fa-circle-check text-emerald-400"></i><span>Travel insurance active</span></div>
+                <div class="flex items-center gap-2 text-sm"><i class="fa-solid fa-circle-check text-emerald-400"></i><span>Embassy registered</span></div>
+                <div class="flex items-center gap-2 text-sm"><i class="fa-solid fa-circle-xmark text-rose-400"></i><span>Check-in reminder: OFF</span></div>
+              </div>
+              <button onclick="showToast('✅ Check-in reminder enabled!','success')" class="btn btn-primary w-full mt-4 text-sm">Enable All Safety</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ SETTINGS ══ -->
+      <section id="section-settings" class="section">
+        <div class="mb-6">
+          <h1 class="font-display text-2xl font-bold">Settings</h1>
+          <p class="text-sm mt-1" style="color:var(--text3)">Manage your account & preferences</p>
+        </div>
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-5">
+            <!-- Profile -->
+            <div class="card p-6">
+              <h3 class="font-display font-bold mb-5">Profile</h3>
+              <div class="flex items-center gap-4 mb-6">
+                <div class="relative">
+                  <div class="w-16 h-16 avatar grad-accent text-white text-2xl">A</div>
+                  <button onclick="showToast('📷 Photo upload coming soon!','info')" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full btn-primary flex items-center justify-center" style="padding:0;"><i class="fa-solid fa-camera text-xs"></i></button>
+                </div>
+                <div>
+                  <div class="font-bold text-lg">Alex Wanderer</div>
+                  <div class="text-sm" style="color:var(--text3)">alex@tripsync.ai · Pro Plan</div>
+                </div>
+              </div>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">FULL NAME</label><input class="input" value="Alex Wanderer"/></div>
+                <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">EMAIL</label><input class="input" value="alex@tripsync.ai"/></div>
+                <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">HOME CITY</label><input class="input" value="San Francisco, CA"/></div>
+                <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">CURRENCY</label><select class="input"><option>USD – US Dollar</option><option>EUR – Euro</option><option>IDR – Indonesian Rupiah</option></select></div>
+              </div>
+              <button onclick="showToast('✅ Profile saved!','success')" class="btn btn-primary mt-5">Save Changes</button>
+            </div>
+            <!-- Preferences -->
+            <div class="card p-6">
+              <h3 class="font-display font-bold mb-4">Preferences</h3>
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <div><div class="text-sm font-medium">Dark Mode</div><div class="text-xs mt-0.5" style="color:var(--text3)">Toggle between light and dark themes</div></div>
+                  <button onclick="toggleTheme()" id="theme-toggle-btn" class="w-12 h-6 rounded-full transition-all relative" style="background:var(--accent);">
+                    <div id="theme-toggle-dot" class="w-5 h-5 bg-white rounded-full absolute top-0.5 transition-all" style="left:auto;right:2px;"></div>
+                  </button>
+                </div>
+                <div class="h-px" style="background:var(--border)"></div>
+                <div class="flex items-center justify-between">
+                  <div><div class="text-sm font-medium">Push Notifications</div><div class="text-xs mt-0.5" style="color:var(--text3)">Trip reminders & alerts</div></div>
+                  <button class="w-12 h-6 rounded-full transition-all relative" style="background:var(--accent);" onclick="this.style.background=this.style.background===''?'var(--accent)':'var(--border)'"><div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5"></div></button>
+                </div>
+                <div class="h-px" style="background:var(--border)"></div>
+                <div class="flex items-center justify-between">
+                  <div><div class="text-sm font-medium">AI Recommendations</div><div class="text-xs mt-0.5" style="color:var(--text3)">Personalized travel suggestions</div></div>
+                  <button class="w-12 h-6 rounded-full relative" style="background:var(--accent);"><div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5"></div></button>
+                </div>
+                <div class="h-px" style="background:var(--border)"></div>
+                <div class="flex items-center justify-between">
+                  <div><div class="text-sm font-medium">Offline Mode</div><div class="text-xs mt-0.5" style="color:var(--text3)">Cache data for offline access</div></div>
+                  <button class="w-12 h-6 rounded-full relative" style="background:var(--accent);"><div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5"></div></button>
+                </div>
+              </div>
+            </div>
+            <!-- Export -->
+            <div class="card p-6">
+              <h3 class="font-display font-bold mb-4">Data & Export</h3>
+              <div class="grid sm:grid-cols-2 gap-3">
+                <button onclick="showToast('📄 Trip report exported!','success')" class="btn btn-ghost text-sm justify-start"><i class="fa-solid fa-file-pdf" style="color:var(--rose)"></i> Export Trip Report</button>
+                <button onclick="showToast('📊 Analytics exported!','success')" class="btn btn-ghost text-sm justify-start"><i class="fa-solid fa-file-excel" style="color:var(--accent3)"></i> Export Analytics</button>
+                <button onclick="showToast('🖼 Photos downloading...','info')" class="btn btn-ghost text-sm justify-start"><i class="fa-solid fa-images" style="color:var(--sky)"></i> Download Photos</button>
+                <button onclick="showToast('⚠ Are you sure? This deletes all data.','warning')" class="btn btn-danger text-sm justify-start"><i class="fa-solid fa-trash"></i> Delete Account</button>
+              </div>
+            </div>
+          </div>
+          <!-- Plan + offline -->
+          <div class="space-y-5">
+            <div class="card p-5" style="background:linear-gradient(135deg,rgba(124,106,255,.15),rgba(168,85,247,.05));">
+              <div class="flex items-center gap-2 mb-3"><i class="fa-solid fa-crown text-yellow-400"></i><span class="font-display font-bold text-sm">Pro Plan</span></div>
+              <div class="space-y-2 text-xs mb-4" style="color:var(--text2)">
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Unlimited trips</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> AI Assistant</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Group travel (10 members)</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Offline mode</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Priority support</div>
+              </div>
+              <div class="text-xs" style="color:var(--text3)">Renews Dec 31, 2025 · $9.99/mo</div>
+            </div>
+            <div class="card p-5" id="offline-status-card">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="online-dot"></div>
+                <h3 class="font-display font-bold text-sm">Sync Status</h3>
+              </div>
+              <div class="space-y-2 text-xs">
+                <div class="flex justify-between"><span style="color:var(--text3)">Last synced</span><span>Just now</span></div>
+                <div class="flex justify-between"><span style="color:var(--text3)">Cached data</span><span>48 MB</span></div>
+                <div class="flex justify-between"><span style="color:var(--text3)">Pending uploads</span><span>0</span></div>
+              </div>
+              <button onclick="showToast('🔄 Sync complete!','success')" class="btn btn-ghost w-full mt-4 text-xs"><i class="fa-solid fa-rotate"></i> Force Sync</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- end sections wrapper -->
+  </main>
+
+  <!-- BOTTOM NAV (mobile) -->
+  <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-40 glass border-t justify-around py-2 px-1" style="border-color:var(--border);">
+    <button onclick="showSection('dashboard')" class="bnav-item flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs active" data-section="dashboard"><i class="fa-solid fa-house text-lg"></i><span>Home</span></button>
+    <button onclick="showSection('tracking')" class="bnav-item flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs" data-section="tracking"><i class="fa-solid fa-location-dot text-lg"></i><span>Track</span></button>
+    <button onclick="showSection('itinerary')" class="bnav-item flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs" data-section="itinerary"><i class="fa-solid fa-calendar-days text-lg"></i><span>Plan</span></button>
+    <button onclick="showSection('expenses')" class="bnav-item flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs" data-section="expenses"><i class="fa-solid fa-wallet text-lg"></i><span>Budget</span></button>
+    <button onclick="showSection('assistant')" class="bnav-item flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs" data-section="assistant"><i class="fa-solid fa-robot text-lg"></i><span>AI</span></button>
+  </nav>
+
+  <!-- FAB -->
+  <button onclick="openNewTrip()" class="fixed bottom-24 right-5 lg:bottom-8 lg:right-8 z-40 w-14 h-14 grad-accent rounded-2xl shadow-xl flex items-center justify-center animate-glow" style="border:none;cursor:pointer;" title="New Trip">
+    <i class="fa-solid fa-plus text-white text-xl"></i>
+  </button>
+</div><!-- end app-shell -->
+
+<!-- ══════════════════ MODALS ══════════════════ -->
+
+<!-- Forgot Password -->
+<div id="modal-forgot" style="display:none;" class="modal-backdrop" onclick="if(event.target===this)closeForgot()">
+  <div class="modal-box p-6">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="font-display font-bold text-lg">Reset Password</h3>
+      <button onclick="closeForgot()" style="background:none;border:none;cursor:pointer;color:var(--text3);"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p class="text-sm mb-4" style="color:var(--text2)">Enter your email and we'll send you a reset link.</p>
+    <div class="relative mb-4">
+      <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-sm" style="color:var(--text3)"></i>
+      <input type="email" placeholder="Email address" class="input pl-10"/>
+    </div>
+    <button onclick="showToast('📧 Reset link sent!','success');closeForgot();" class="btn btn-primary w-full">Send Reset Link</button>
+  </div>
+</div>
+
+<!-- Add Expense -->
+<div id="modal-expense" style="display:none;" class="modal-backdrop" onclick="if(event.target===this)closeModal('modal-expense')">
+  <div class="modal-box p-6">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="font-display font-bold text-lg">Add Expense</h3>
+      <button onclick="closeModal('modal-expense')" style="background:none;border:none;cursor:pointer;color:var(--text3);"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="space-y-4">
+      <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">AMOUNT</label>
+        <div class="relative"><span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold">$</span><input type="number" placeholder="0.00" class="input pl-8" id="exp-amount"/></div></div>
+      <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">DESCRIPTION</label><input type="text" placeholder="What did you spend on?" class="input" id="exp-desc"/></div>
+      <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">CATEGORY</label>
+        <select class="input" id="exp-cat">
+          <option value="Food">🍽 Food & Drinks</option>
+          <option value="Hotel">🏨 Hotel</option>
+          <option value="Transport">✈ Transport</option>
+          <option value="Shopping">🛍 Shopping</option>
+          <option value="Entertainment">🎭 Entertainment</option>
+          <option value="Misc">📦 Misc</option>
+        </select></div>
+      <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">DATE</label><input type="date" class="input" id="exp-date"/></div>
+      <div class="flex gap-2">
+        <button onclick="closeModal('modal-expense')" class="btn btn-ghost flex-1">Cancel</button>
+        <button onclick="saveExpense()" class="btn btn-primary flex-1">Add Expense</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Trip -->
+<div id="modal-trip" style="display:none;" class="modal-backdrop" onclick="if(event.target===this)closeModal('modal-trip')">
+  <div class="modal-box p-6">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="font-display font-bold text-lg">New Trip</h3>
+      <button onclick="closeModal('modal-trip')" style="background:none;border:none;cursor:pointer;color:var(--text3);"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="space-y-4">
+      <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">TRIP NAME</label><input type="text" placeholder="e.g. Tokyo Spring 2025" class="input"/></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">START DATE</label><input type="date" class="input"/></div>
+        <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">END DATE</label><input type="date" class="input"/></div>
+      </div>
+      <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">DESTINATION</label><input type="text" placeholder="City, Country" class="input"/></div>
+      <div><label class="text-xs font-medium mb-2 block" style="color:var(--text3)">BUDGET (USD)</label><input type="number" placeholder="0" class="input"/></div>
+      <div class="p-4 rounded-xl" style="background:rgba(124,106,255,.08);border:1px solid rgba(124,106,255,.2);">
+        <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-robot text-sm" style="color:var(--accent)"></i><span class="text-sm font-medium">AI Auto-Plan</span></div>
+        <p class="text-xs" style="color:var(--text3)">Let AI automatically generate a personalized itinerary, suggest hotels, and plan activities.</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="closeModal('modal-trip')" class="btn btn-ghost flex-1">Cancel</button>
+        <button onclick="createTrip()" class="btn btn-primary flex-1"><i class="fa-solid fa-rocket"></i> Create Trip</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notifications -->
+<div id="modal-notifs" style="display:none;" class="modal-backdrop" onclick="if(event.target===this)closeModal('modal-notifs')">
+  <div class="modal-box p-0" style="max-width:380px;max-height:80vh;">
+    <div class="p-4 border-b flex items-center justify-between" style="border-color:var(--border);">
+      <h3 class="font-display font-bold">Notifications</h3>
+      <button onclick="closeModal('modal-notifs')" style="background:none;border:none;cursor:pointer;color:var(--text3);"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="overflow-y-auto" style="max-height:calc(80vh - 60px);">
+      <div class="divide-y" style="border-color:var(--border);">
+        <div class="p-4 hover:bg-opacity-50 transition-all" style="background:rgba(124,106,255,.05);">
+          <div class="flex gap-3"><div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(124,106,255,.2);">🤖</div><div><div class="text-sm font-medium">AI Insight Ready</div><div class="text-xs mt-0.5" style="color:var(--text3)">Your Bali trip summary is ready to view</div><div class="text-xs mt-1" style="color:var(--text3)">2 min ago</div></div></div>
+        </div>
+        <div class="p-4">
+          <div class="flex gap-3"><div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(244,162,97,.2);">⚠️</div><div><div class="text-sm font-medium">Budget Alert</div><div class="text-xs mt-0.5" style="color:var(--text3)">You've used 71% of your Bali budget</div><div class="text-xs mt-1" style="color:var(--text3)">1 hour ago</div></div></div>
+        </div>
+        <div class="p-4">
+          <div class="flex gap-3"><div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(6,214,160,.2);">✈️</div><div><div class="text-sm font-medium">Flight Reminder</div><div class="text-xs mt-0.5" style="color:var(--text3)">Return flight in 3 days · GA-401 Gate A8</div><div class="text-xs mt-1" style="color:var(--text3)">3 hours ago</div></div></div>
+        </div>
+        <div class="p-4">
+          <div class="flex gap-3"><div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(56,189,248,.2);">🌧️</div><div><div class="text-sm font-medium">Weather Alert</div><div class="text-xs mt-0.5" style="color:var(--text3)">Light rain expected Saturday in Nusa Dua</div><div class="text-xs mt-1" style="color:var(--text3)">Yesterday</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- NAV STYLES (inline) -->
+<style>
+.nav-item{color:var(--text2);}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:rgba(124,106,255,.15);color:var(--accent);}
+.day-tab{background:var(--surface);border:1px solid var(--border);color:var(--text2);}
+.day-tab.active{background:var(--accent);border-color:var(--accent);color:white;}
+.bnav-item{background:none;border:none;cursor:pointer;color:var(--text3);transition:all .2s;}
+.bnav-item.active{color:var(--accent);}
+.bnav-item:hover{color:var(--text);}
+</style>
+
+<script>
+// ══════════════════ APP STATE ══════════════════
+const state = {
+  currentSection: 'dashboard',
+  theme: localStorage.getItem('theme') || 'dark',
+  isOffline: false,
+  expenses: JSON.parse(localStorage.getItem('expenses') || '[]'),
+  currentDay: 1,
+  chartInstances: {}
+};
+
+// ══════════════════ MOCK DATA ══════════════════
+const ITINERARY = {
+  1:[{time:'14:30',title:'Arrive Denpasar Airport',emoji:'✈',cat:'Transport',duration:'1h',note:'Garuda GA-400'},
+     {time:'16:30',title:'Transfer to Seminyak',emoji:'🚗',cat:'Transport',duration:'45m',note:'Private car booked'},
+     {time:'18:00',title:'Check-in Hotel Katamama',emoji:'🏨',cat:'Hotel',duration:'30m',note:'Room 302'},
+     {time:'20:00',title:'Welcome Dinner at Merah Putih',emoji:'🍽',cat:'Food',duration:'2h',note:'Rooftop · Balinese cuisine'}],
+  2:[{time:'07:00',title:'Sunrise Yoga Class',emoji:'🧘',cat:'Activity',duration:'1h',note:'Beachfront'},
+     {time:'09:00',title:'Traditional Balinese Breakfast',emoji:'🍳',cat:'Food',duration:'1h',note:'Included in stay'},
+     {time:'11:00',title:'Pura Tanah Lot Temple',emoji:'🛕',cat:'Culture',duration:'2h',note:'15km · Entry IDR 60k'},
+     {time:'14:00',title:'Jimbaran Bay Lunch',emoji:'🦞',cat:'Food',duration:'1.5h',note:'Seafood on the beach'},
+     {time:'17:00',title:'Seminyak Sunset Walk',emoji:'🌅',cat:'Leisure',duration:'2h',note:'Golden hour photography'}],
+  3:[{time:'08:00',title:'Tegalalang Rice Terraces',emoji:'🌾',cat:'Nature',duration:'3h',note:'UNESCO · Bring camera'},
+     {time:'12:00',title:'Ubud Market Shopping',emoji:'🛍',cat:'Shopping',duration:'2h',note:'Handicrafts & batik'},
+     {time:'15:00',title:'Ubud Palace Visit',emoji:'👑',cat:'Culture',duration:'1.5h',note:'Puri Saren Agung'},
+     {time:'19:00',title:'Kecak Fire Dance',emoji:'🔥',cat:'Culture',duration:'1.5h',note:'Uluwatu · Book ahead'}],
+  4:[{time:'09:00',title:'Tanah Lot Sunrise Ceremony',emoji:'🌄',cat:'Culture',duration:'2h',note:'Sacred temple'},
+     {time:'12:30',title:'Lunch at Sarong Restaurant',emoji:'🍜',cat:'Food',duration:'1.5h',note:'Reserved · Fine dining'},
+     {time:'15:00',title:'COMO Uma Bali Spa',emoji:'💆',cat:'Wellness',duration:'2h',note:'Balinese massage'}],
+  5:[{time:'08:00',title:'Nusa Dua Water Sports',emoji:'🏄',cat:'Adventure',duration:'3h',note:'Surfing · Kiteboarding'},
+     {time:'13:00',title:'Waterblow Nature Park',emoji:'🌊',cat:'Nature',duration:'1.5h',note:'Dramatic cliffs'},
+     {time:'16:00',title:'Afternoon Beach Club',emoji:'🍹',cat:'Leisure',duration:'3h',note:'Pool day at Kudeta'}],
+  6:[{time:'07:00',title:'Mount Batur Sunrise Trek',emoji:'🌋',cat:'Adventure',duration:'5h',note:'Guide included · 1717m'},
+     {time:'14:00',title:'Hot Springs Recovery',emoji:'♨',cat:'Wellness',duration:'2h',note:'Natural thermal pools'},
+     {time:'19:00',title:'Farewell Dinner',emoji:'🥂',cat:'Food',duration:'2h',note:'Mozaic Restaurant'}],
+  7:[{time:'09:00',title:'Souvenir Shopping',emoji:'🎁',cat:'Shopping',duration:'2h',note:'Last minute gifts'},
+     {time:'12:00',title:'Checkout & Lunch',emoji:'🏨',cat:'Hotel',duration:'1.5h',note:'Late checkout arranged'},
+     {time:'15:00',title:'Airport Transfer',emoji:'🚗',cat:'Transport',duration:'45m',note:'Private car'},
+     {time:'18:45',title:'Depart Denpasar',emoji:'✈',cat:'Transport',duration:'',note:'GA-401 · Home bound'}]
+};
+
+const TRANSACTIONS = [
+  {id:1,desc:'Hotel Katamama',amount:420,cat:'Hotel',emoji:'🏨',date:'Jul 18'},
+  {id:2,desc:'Sarong Restaurant',amount:85,cat:'Food',emoji:'🍜',date:'Jul 18'},
+  {id:3,desc:'Spa Treatment',amount:65,cat:'Wellness',emoji:'💆',date:'Jul 17'},
+  {id:4,desc:'Airport Transfer',amount:35,cat:'Transport',emoji:'🚗',date:'Jul 17'},
+  {id:5,desc:'Tegalalang Entry',amount:12,cat:'Activity',emoji:'🌾',date:'Jul 17'},
+  {id:6,desc:'Ubud Market',amount:78,cat:'Shopping',emoji:'🛍',date:'Jul 17'},
+  {id:7,desc:'Garuda Airlines',amount:580,cat:'Transport',emoji:'✈',date:'Jul 15'},
+];
+
+const AI_RESPONSES = {
+  'suggest places nearby': 'Based on your location in Seminyak, here are my top picks:\n\n🌊 **Ku De Ta Beach Club** – 5 min walk, stunning sunset views\n🛁 **Prana Spa** – 10 min, best lulur treatment in Bali\n🍜 **La Lucciola** – 8 min, Italian by the beach\n📸 **Seminyak Square** – 12 min, great for shopping & photos\n\nWant me to add any of these to tomorrow\'s itinerary?',
+  "show today itinerary": 'Your schedule for **Day 4 · Jul 18**:\n\n⏰ 09:00 – Sunrise at Tanah Lot (2h)\n🍜 12:30 – Lunch at Sarong Restaurant (1.5h)\n💆 15:00 – Spa at COMO Uma Bali (2h)\n🌅 18:30 – Sunset walk at Seminyak Beach\n\nEstimated cost: ~$170 · Transport: ~45min total.',
+  'how much did i spend?': 'Here\'s your spending summary for this trip:\n\n💰 **Total Spent**: $2,847 of $4,000 budget (71.2%)\n🍽 Food & Drinks: $620\n🏨 Hotels: $1,240\n✈ Transport: $680\n🛍 Shopping: $307\n\nWith 3 days left, you have **$1,153** remaining. You\'re on track! 🎉',
+  'best cafes nearby?': 'Top cafes near Seminyak I recommend:\n\n☕ **Revolver Espresso** – Best flat white in Bali, 7 min walk\n🥐 **Shelter Coffee** – Instagram-worthy, 10 min\n🧋 **Potato Head Beach Club** – Iconic, 5 min walk\n📚 **Crate Café** – Specialty coffee, healthy bowls, 12 min\n\nRevolver is my #1 pick – opens at 7am!',
+};
+
+function getAIResponse(msg) {
+  const m = msg.toLowerCase().trim();
+  for (const key in AI_RESPONSES) {
+    if (m.includes(key)) return AI_RESPONSES[key];
+  }
+  const generic = [
+    `Great question about "${msg}"! Based on your Bali trip data, I can see you're in Seminyak on Day 4. Let me pull up the most relevant information... I recommend checking the local tourist office or asking your hotel concierge for personalized help with this!`,
+    `I've analyzed your trip data for "${msg}". You're doing great so far – 4 days in Bali, $2,847 spent, 148 memories captured! For this specific query, I suggest exploring the Itinerary or Analytics sections for more details.`,
+    `For "${msg}" – based on your travel history and current location in Seminyak, I'd suggest consulting the latest recommendations on Bali's tourism website. Want me to optimize your remaining 3 days instead?`
+  ];
+  return generic[Math.floor(Math.random()*generic.length)];
+}
+
+const MEMORIES = [
+  {emoji:'🌅',title:'Tanah Lot Sunset',loc:'Tanah Lot',color:'#1e3a5f,#f4a261',height:'h-48'},
+  {emoji:'🌿',title:'Rice Terraces',loc:'Tegalalang',color:'#1a3a1a,#06d6a0',height:'h-36'},
+  {emoji:'🐒',title:'Monkey Forest',loc:'Ubud',color:'#2d2a1a,#f4a261',height:'h-52'},
+  {emoji:'🌊',title:'Seminyak Beach',loc:'Seminyak',color:'#0d2033,#38bdf8',height:'h-40'},
+  {emoji:'🏛',title:'Ubud Palace',loc:'Ubud',color:'#2a1a0d,#a855f7',height:'h-44'},
+  {emoji:'🍜',title:'Naughty Nuris',loc:'Ubud',color:'#2a0d0d,#ff6b6b',height:'h-36'},
+  {emoji:'🌺',title:'Temple Ceremony',loc:'Pura Besakih',color:'#2a1a2a,#7c6aff',height:'h-48'},
+  {emoji:'🏄',title:'Surfer\'s Paradise',loc:'Kuta Beach',color:'#0d1a2a,#06d6a0',height:'h-40'},
+  {emoji:'🦆',title:'Duck Walk',loc:'Ubud Fields',color:'#1a2a0d,#a8e063',height:'h-36'},
+  {emoji:'☕',title:'Morning Coffee',loc:'Revolver Cafe',color:'#1a0d0d,#f4a261',height:'h-44'},
+  {emoji:'🌋',title:'Mount Batur',loc:'Kintamani',color:'#0d0d1a,#7c6aff',height:'h-52'},
+  {emoji:'🎭',title:'Kecak Dance',loc:'Uluwatu',color:'#2a1a0d,#ff6b6b',height:'h-40'},
+];
+
+// ══════════════════ AUTH ══════════════════
+function switchAuth(tab) {
+  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('tab-login').className = 'flex-1 py-2.5 rounded-lg text-sm font-medium transition-all ' + (tab==='login'?'btn-primary':'btn-ghost');
+  document.getElementById('tab-signup').className = 'flex-1 py-2.5 rounded-lg text-sm font-medium transition-all ' + (tab==='signup'?'btn-primary':'btn-ghost');
+}
+function togglePass(id) {
+  const el = document.getElementById(id);
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+function doLogin() {
+  showToast('🔐 Authenticating...', 'info');
+  setTimeout(() => {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-shell').style.display = 'block';
+    showSection('dashboard');
+    initApp();
+    showToast('👋 Welcome back, Alex!', 'success');
+  }, 1000);
+}
+function showForgot() { document.getElementById('modal-forgot').style.display='flex'; }
+function closeForgot() { document.getElementById('modal-forgot').style.display='none'; }
+
+// ══════════════════ NAVIGATION ══════════════════
+function showSection(id) {
+  // hide all
+  document.querySelectorAll('.section').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  // show target
+  const el = document.getElementById('section-' + id);
+  if (el) {
+    el.style.display = 'block';
+    requestAnimationFrame(() => el.classList.add('active'));
+  }
+  state.currentSection = id;
+  // sidebar nav
+  document.querySelectorAll('.nav-item').forEach(a => {
+    a.classList.toggle('active', a.dataset.section === id);
+  });
+  // bottom nav
+  document.querySelectorAll('.bnav-item').forEach(b => {
+    b.classList.toggle('active', b.dataset.section === id);
+  });
+  // close mobile sidebar
+  if (window.innerWidth < 768) {
+    document.getElementById('sidebar').classList.remove('mobile-open');
+  }
+  // lazy init charts
+  if (id === 'dashboard') initDashboardCharts();
+  if (id === 'expenses') { renderTransactions(); initExpenseChart(); }
+  if (id === 'analytics') initAnalyticsCharts();
+  if (id === 'itinerary') renderItinerary(state.currentDay);
+  if (id === 'memories') renderMemories();
+  // animate counters
+  setTimeout(animateCounters, 100);
+}
+
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  if (window.innerWidth < 768) {
+    sb.classList.toggle('mobile-open');
+  } else {
+    sb.classList.toggle('collapsed');
+    document.getElementById('main-content').classList.toggle('expanded');
+  }
+}
+
+// ══════════════════ THEME ══════════════════
+function toggleTheme() {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', state.theme);
+  localStorage.setItem('theme', state.theme);
+  document.getElementById('theme-icon').className = state.theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+  showToast(state.theme === 'dark' ? '🌙 Dark mode' : '☀ Light mode', 'info');
+}
+
+// ══════════════════ TOAST ══════════════════
+function showToast(msg, type='success') {
+  const icons = {success:'fa-circle-check text-emerald-400', error:'fa-circle-xmark text-rose-400', warning:'fa-triangle-exclamation text-yellow-400', info:'fa-circle-info text-sky-400'};
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<i class="fa-solid ${icons[type]||icons.info}"></i><span class="text-sm">${msg}</span><button onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text3);"><i class="fa-solid fa-xmark text-xs"></i></button>`;
+  document.getElementById('toast-container').appendChild(t);
+  setTimeout(() => { t.classList.add('removing'); setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+// ══════════════════ OFFLINE ══════════════════
+function toggleOffline() {
+  state.isOffline = !state.isOffline;
+  const btn = document.getElementById('offline-btn');
+  if (state.isOffline) {
+    btn.innerHTML = '<span class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--rose);"></span> Offline';
+    btn.style.color = 'var(--rose)';
+    showToast('📵 Offline mode – data cached locally', 'warning');
+  } else {
+    btn.innerHTML = '<span class="online-dot" style="width:8px;height:8px;"></span> Online';
+    btn.style.color = '';
+    showToast('🔄 Back online – syncing...', 'success');
+  }
+}
+
+// ══════════════════ MODALS ══════════════════
+function closeModal(id) { document.getElementById(id).style.display='none'; }
+function openAddExpense() { document.getElementById('modal-expense').style.display='flex'; document.getElementById('exp-date').value=new Date().toISOString().split('T')[0]; }
+function openNewTrip() { document.getElementById('modal-trip').style.display='flex'; }
+function openNotifs() { document.getElementById('modal-notifs').style.display='flex'; }
+function saveExpense() {
+  const amount = parseFloat(document.getElementById('exp-amount').value);
+  const desc = document.getElementById('exp-desc').value;
+  if (!amount || !desc) { showToast('Please fill all fields','error'); return; }
+  const exp = { id:Date.now(), desc, amount, cat:document.getElementById('exp-cat').value, date:document.getElementById('exp-date').value, emoji:'💰' };
+  state.expenses.unshift(exp);
+  localStorage.setItem('expenses', JSON.stringify(state.expenses));
+  closeModal('modal-expense');
+  showToast(`💰 $${amount} expense added!`, 'success');
+  renderTransactions();
+}
+function createTrip() {
+  closeModal('modal-trip');
+  showToast('🚀 Trip created! AI is generating itinerary...','success');
+  setTimeout(() => showToast('📅 Itinerary ready! Check the planner.','info'), 2000);
+}
+
+// ══════════════════ ITINERARY ══════════════════
+function switchDay(day) {
+  state.currentDay = day;
+  document.querySelectorAll('.day-tab').forEach(t => t.classList.toggle('active', parseInt(t.dataset.day)===day));
+  renderItinerary(day);
+}
+function renderItinerary(day) {
+  const data = ITINERARY[day] || [];
+  const container = document.getElementById('itinerary-cards');
+  if (!container) return;
+  container.innerHTML = data.map((item, i) => `
+    <div class="card p-4 flex gap-4 items-start animate-fadeUp" style="animation-delay:${i*0.08}s;cursor:grab;" draggable="true">
+      <div class="text-xs font-medium w-12 flex-shrink-0 pt-1" style="color:var(--accent)">${item.time}</div>
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style="background:var(--surface2);">${item.emoji}</div>
+      <div class="flex-1 min-w-0">
+        <div class="text-sm font-medium">${item.title}</div>
+        <div class="text-xs mt-0.5" style="color:var(--text3)">${item.note}${item.duration?' · '+item.duration:''}</div>
+        <span class="badge badge-purple text-xs mt-2">${item.cat}</span>
+      </div>
+      <button onclick="this.closest('.card').remove();showToast('Removed from itinerary','info')" class="p-1.5 rounded-lg opacity-50 hover:opacity-100 transition-all flex-shrink-0" style="color:var(--text3);background:none;border:none;cursor:pointer;"><i class="fa-solid fa-trash text-xs"></i></button>
+    </div>`).join('');
+  document.getElementById('activity-count').textContent = data.length + ' planned';
+}
+function addActivity() {
+  const item = {time:'12:00',title:'New Activity',emoji:'⭐',cat:'Custom',duration:'1h',note:'Added by you'};
+  ITINERARY[state.currentDay] = ITINERARY[state.currentDay] || [];
+  ITINERARY[state.currentDay].push(item);
+  renderItinerary(state.currentDay);
+  showToast('✅ Activity added!','success');
+}
+function addSuggestion(btn, title, time, dur, cat) {
+  const item = {time, title, emoji:'⭐', cat, duration:dur, note:'AI Suggested'};
+  ITINERARY[state.currentDay] = ITINERARY[state.currentDay] || [];
+  ITINERARY[state.currentDay].push(item);
+  renderItinerary(state.currentDay);
+  showToast(`✅ "${title}" added!`,'success');
+}
+function generateAIItinerary() {
+  showToast('🤖 AI generating optimal itinerary...','info');
+  setTimeout(() => { showToast('✨ Itinerary optimized!','success'); renderItinerary(state.currentDay); }, 1800);
+}
+
+// ══════════════════ EXPENSES ══════════════════
+function renderTransactions() {
+  const container = document.getElementById('transactions-list');
+  if (!container) return;
+  const all = [...TRANSACTIONS, ...state.expenses];
+  container.innerHTML = all.slice(0,10).map(t => `
+    <div class="flex items-center gap-3 p-3 rounded-xl transition-all hover:opacity-90" style="background:var(--surface2);">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0" style="background:var(--surface3);">${t.emoji||'💰'}</div>
+      <div class="flex-1 min-w-0">
+        <div class="text-sm font-medium truncate">${t.desc}</div>
+        <div class="text-xs" style="color:var(--text3)">${t.cat} · ${t.date||'Today'}</div>
+      </div>
+      <div class="font-display font-bold text-sm flex-shrink-0" style="color:var(--rose)">-$${t.amount}</div>
+    </div>`).join('');
+}
+function filterExpenses(cat) { renderTransactions(); }
+
+// ══════════════════ MEMORIES ══════════════════
+function renderMemories() {
+  const grid = document.getElementById('memories-grid');
+  if (!grid) return;
+  grid.innerHTML = MEMORIES.map((m, i) => `
+    <div class="masonry-item card overflow-hidden cursor-pointer animate-fadeUp" style="animation-delay:${i*0.05}s;" onclick="showToast('📸 Opening memory...','info')">
+      <div class="${m.height} flex items-center justify-center text-5xl" style="background:linear-gradient(135deg,#${m.color});">${m.emoji}</div>
+      <div class="p-3">
+        <div class="text-sm font-medium">${m.title}</div>
+        <div class="text-xs mt-0.5 flex items-center gap-1" style="color:var(--text3);"><i class="fa-solid fa-location-dot text-xs"></i>${m.loc}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════ CHARTS ══════════════════
+function destroyChart(key) {
+  if (state.chartInstances[key]) { state.chartInstances[key].destroy(); delete state.chartInstances[key]; }
+}
+const chartDefaults = {
+  color: '#b0b0c8',
+  plugins: { legend: { display: false } },
+  grid: { color: 'rgba(255,255,255,0.05)' }
+};
+
+function initDashboardCharts() {
+  const ctx = document.getElementById('dashExpenseChart');
+  if (!ctx || state.chartInstances.dashExpense) return;
+  state.chartInstances.dashExpense = new Chart(ctx, {
+    type:'doughnut',
+    data:{ datasets:[{ data:[44,24,22,10], backgroundColor:['#7c6aff','#06d6a0','#f4a261','#a855f7'], borderWidth:0, hoverOffset:8 }] },
+    options:{ cutout:'75%', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw}%`}}} }
+  });
+}
+
+function initExpenseChart() {
+  destroyChart('expensePie');
+  const ctx = document.getElementById('expensePieChart');
+  if (!ctx) return;
+  state.chartInstances.expensePie = new Chart(ctx, {
+    type:'doughnut',
+    data:{ datasets:[{ data:[44,24,22,10], backgroundColor:['#7c6aff','#06d6a0','#f4a261','#a855f7'], borderWidth:0, hoverOffset:10 }] },
+    options:{ cutout:'65%', responsive:true, plugins:{legend:{display:false}} }
+  });
+}
+
+function initAnalyticsCharts() {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  destroyChart('monthly');
+  const mCtx = document.getElementById('monthlyChart');
+  if (mCtx) {
+    state.chartInstances.monthly = new Chart(mCtx, {
+      type:'bar',
+      data:{ labels:months, datasets:[{ data:[1,3,0,2,1,4,2,0,0,0,0,0], backgroundColor:'rgba(124,106,255,.6)', borderRadius:8, hoverBackgroundColor:'#7c6aff' }] },
+      options:{ responsive:true, scales:{ x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6e6e88',font:{size:10}}}, y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6e6e88',font:{size:10}},beginAtZero:true} }, plugins:{legend:{display:false}} }
+    });
+  }
+  destroyChart('annual');
+  const aCtx = document.getElementById('annualChart');
+  if (aCtx) {
+    state.chartInstances.annual = new Chart(aCtx, {
+      type:'line',
+      data:{ labels:months, datasets:[{ data:[800,1200,400,2100,900,3200,2847,0,0,0,0,0], borderColor:'#06d6a0', backgroundColor:'rgba(6,214,160,.1)', fill:true, tension:0.4, pointBackgroundColor:'#06d6a0', pointRadius:4 }] },
+      options:{ responsive:true, scales:{ x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6e6e88',font:{size:10}}}, y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6e6e88',font:{size:10}},beginAtZero:true} }, plugins:{legend:{display:false}} }
+    });
+  }
+  destroyChart('continent');
+  const cCtx = document.getElementById('continentChart');
+  if (cCtx) {
+    state.chartInstances.continent = new Chart(cCtx, {
+      type:'polarArea',
+      data:{ labels:['Asia','Europe','Americas','Oceania','Africa'], datasets:[{ data:[12,6,3,1,1], backgroundColor:['rgba(124,106,255,.7)','rgba(6,214,160,.7)','rgba(244,162,97,.7)','rgba(56,189,248,.7)','rgba(168,85,247,.7)'], borderWidth:0 }] },
+      options:{ responsive:true, plugins:{ legend:{ labels:{color:'#b0b0c8',font:{size:11}}, position:'right' } }, scales:{ r:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{display:false}} } }
+    });
+  }
+}
+
+// ══════════════════ COUNTERS ══════════════════
+function animateCounters() {
+  document.querySelectorAll('.counter').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    if (!target || el._animated) return;
+    el._animated = true;
+    const duration = 1200;
+    const start = performance.now();
+    function update(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1-p, 3);
+      el.textContent = Math.floor(ease * target).toLocaleString();
+      if (p < 1) requestAnimationFrame(update);
+      else el.textContent = target.toLocaleString();
+    }
+    requestAnimationFrame(update);
+  });
+}
+
+// ══════════════════ CHAT ══════════════════
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  appendUserMsg(msg);
+  input.value = '';
+  setTimeout(() => appendTyping(), 300);
+  setTimeout(() => { removeTyping(); appendAIMsg(getAIResponse(msg)); }, 1500 + Math.random()*700);
+}
+function sendQuick(msg) {
+  showSection('assistant');
+  setTimeout(() => {
+    const input = document.getElementById('chat-input');
+    if (input) input.value = msg;
+    sendChat();
+  }, 200);
+}
+function appendUserMsg(msg) {
+  const c = document.getElementById('chat-messages');
+  const d = document.createElement('div');
+  d.className = 'flex justify-end';
+  d.innerHTML = `<div class="chat-bubble chat-user">${msg}</div>`;
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+function appendAIMsg(msg) {
+  const c = document.getElementById('chat-messages');
+  const d = document.createElement('div');
+  d.className = 'flex gap-3 animate-fadeUp';
+  const html = msg.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br/>');
+  d.innerHTML = `<div class="w-8 h-8 rounded-xl grad-accent flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div><div class="chat-bubble chat-ai">${html}</div>`;
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+function appendTyping() {
+  const c = document.getElementById('chat-messages');
+  const d = document.createElement('div');
+  d.id = 'typing-indicator';
+  d.className = 'flex gap-3';
+  d.innerHTML = `<div class="w-8 h-8 rounded-xl grad-accent flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div><div class="chat-bubble chat-ai flex gap-1.5 items-center py-3 px-4"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+function removeTyping() { const t = document.getElementById('typing-indicator'); if (t) t.remove(); }
+
+// ══════════════════ GROUP CHAT ══════════════════
+function sendGroupChat() {
+  const input = document.getElementById('group-chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const c = document.getElementById('group-chat');
+  const d = document.createElement('div');
+  d.className = 'flex gap-2 items-end justify-end';
+  d.innerHTML = `<div class="chat-bubble chat-user text-xs">${msg}</div>`;
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+  input.value = '';
+  // Simulate reply
+  const replies = ['Sounds great! 🎉','Count me in!','Love it! When do we meet?','Perfect timing 🙌','On my way!'];
+  const names = ['S','M','J'];
+  const colors = ['linear-gradient(135deg,#f4a261,#e76f51)','linear-gradient(135deg,#06d6a0,#0d6efd)','linear-gradient(135deg,#7c6aff,#a855f7)'];
+  setTimeout(() => {
+    const ri = Math.floor(Math.random()*3);
+    const d2 = document.createElement('div');
+    d2.className = 'flex gap-2 items-end animate-fadeUp';
+    d2.innerHTML = `<div class="w-7 h-7 avatar text-white text-xs flex-shrink-0 font-bold" style="background:${colors[ri]};">${names[ri]}</div><div class="chat-bubble chat-ai text-xs">${replies[Math.floor(Math.random()*replies.length)]}</div>`;
+    c.appendChild(d2);
+    c.scrollTop = c.scrollHeight;
+  }, 800 + Math.random()*600);
+}
+
+// ══════════════════ SAFETY ══════════════════
+function triggerSOS() {
+  showToast('🚨 SOS Alert sent to Sara & Marco!', 'error');
+  setTimeout(() => showToast('📍 Live location shared with emergency contacts', 'warning'), 1000);
+  setTimeout(() => showToast('🚔 Local emergency services notified', 'error'), 2000);
+}
+
+// ══════════════════ SEARCH ══════════════════
+function handleSearch(val) {
+  if (val.length > 2) showToast(`🔍 Searching for "${val}"...`, 'info');
+}
+
+// ══════════════════ INIT ══════════════════
+function initApp() {
+  document.documentElement.setAttribute('data-theme', state.theme);
+  document.getElementById('theme-icon').className = state.theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+  // Set default date
+  const today = new Date().toISOString().split('T')[0];
+  const datein = document.getElementById('exp-date');
+  if (datein) datein.value = today;
+  // Initial section
+  showSection('dashboard');
+  // Simulate real-time updates
+  setInterval(() => {
+    const el = document.querySelector('.counter[data-target="148"]');
+    if (el && Math.random() > 0.9) {
+      const cur = parseInt(el.textContent.replace(',',''));
+      el.textContent = (cur + 1).toLocaleString();
+    }
+  }, 8000);
+}
+
+// Apply theme on load (auth screen)
+document.documentElement.setAttribute('data-theme', state.theme);
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-backdrop').forEach(m => m.style.display='none');
+  }
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    const s = document.getElementById('global-search');
+    if (s) s.focus();
+  }
+});
+
+// Scroll animations
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }
+  });
+}, { threshold: 0.1 });
+
+setTimeout(() => {
+  document.querySelectorAll('.card').forEach(c => {
+    c.style.transition='opacity .4s,transform .4s';
+    observer.observe(c);
+  });
+}, 500);
+</script>
+</body>
+</html>

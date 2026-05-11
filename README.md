@@ -115,7 +115,7 @@
 
 ### 🛡️ `section-safety` — Safety Center
 
-![section-safety](screenshots/section-safety.png)
+![section-safety](safety.png)
 
 > `id="section-safety"` · `triggerSOS()` fires 3 sequential toasts (contacts → location → emergency services), emergency contacts with call action, local numbers (🚔 110 / 🏥 119 / 🚒 113), medical info card (blood type, allergies, insurance), and safety status checklist.
 
